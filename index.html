@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="th" id="html-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หน้าหลัก ส่วนงานหัวหน้าไลน์ผลิตน้ำปลา ทิพรส</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font: Sarabun -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; }
+    </style>
+</head>
+<body id="page-body" class="bg-slate-50 text-slate-800 min-h-screen flex flex-col transition-colors duration-200">
+
+    <!-- Header / Navbar -->
+    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-indigo-600 p-2.5 rounded-xl text-white shadow-lg">
+                    <i class="fa-solid fa-bottle-droplet text-xl"></i>
+                </div>
+                <div>
+                    <h1 id="main-heading" class="text-xl font-bold tracking-wide">หน้าหลัก ส่วนงานหัวหน้าไลน์ผลิตน้ำปลา ทิพรส</h1>
+                    <p id="sub-heading" class="text-xs text-slate-400">ระบบบริหารจัดการและศูนย์รวมข้อมูลหัวหน้าไลน์ผลิต</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <!-- Current Date Box -->
+                <div class="bg-slate-800 px-3.5 py-2 rounded-lg border border-slate-700 text-sm flex items-center space-x-2 text-white">
+                    <i class="fa-solid fa-calendar-days text-indigo-400"></i>
+                    <span id="current-date">กำลังโหลดวันที่...</span>
+                </div>
+
+                <!-- Dark/Light Mode Toggle Button -->
+                <button onclick="toggleDarkMode()" id="theme-btn" class="bg-slate-800 hover:bg-slate-700 text-amber-400 px-3 py-2 rounded-lg border border-slate-700 text-sm font-semibold transition-colors flex items-center gap-1.5 cursor-pointer" title="สลับโหมดสว่าง/มืด">
+                    <i id="theme-icon" class="fa-solid fa-sun"></i> <span id="theme-label">มืด</span>
+                </button>
+
+                <!-- Language Toggle Button -->
+                <button onclick="toggleLanguage()" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 px-3 py-2 rounded-lg border border-slate-700 text-sm font-semibold transition-colors flex items-center gap-1.5 cursor-pointer" title="สลับภาษา">
+                    <i class="fa-solid fa-globe"></i> <span id="lang-label">EN</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-grow space-y-8 w-full">
+
+        <!-- Grid Layout for Calendar, PDF Upload & Calculator -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Section 1: Interactive Calendar with 2026 Official Holidays (1 Column) -->
+            <section class="ui-card bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between transition-colors">
+                <div>
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 id="cal-title" class="text-base font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-alt text-indigo-600"></i> ปฏิทินวันทำงาน & วันหยุด 2569
+                        </h2>
+                        <button onclick="openHolidaySettings()" class="ui-btn-sub bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1 cursor-pointer" title="ตั้งค่าวันหยุด">
+                            <i class="fa-solid fa-gear"></i> <span data-i18n="settings">ตั้งค่าวันหยุด</span>
+                        </button>
+                    </div>
+
+                    <!-- Calendar Header Controls -->
+                    <div id="cal-header-box" class="flex justify-between items-center bg-slate-100 px-3 py-2 rounded-xl mb-4 transition-colors">
+                        <button onclick="changeMonth(-1)" class="cal-nav-btn w-8 h-8 rounded-lg bg-white shadow-xs hover:bg-indigo-50 hover:text-indigo-600 flex items-center justify-center transition-colors cursor-pointer">
+                            <i class="fa-solid fa-chevron-left text-xs"></i>
+                        </button>
+                        <span id="calendar-month-year" class="text-sm font-bold text-slate-700">กันยายน 2569</span>
+                        <button onclick="changeMonth(1)" class="cal-nav-btn w-8 h-8 rounded-lg bg-white shadow-xs hover:bg-indigo-50 hover:text-indigo-600 flex items-center justify-center transition-colors cursor-pointer">
+                            <i class="fa-solid fa-chevron-right text-xs"></i>
+                        </button>
+                    </div>
+
+                    <!-- Days of Week Header -->
+                    <div class="grid grid-cols-7 text-center text-xs font-bold text-slate-400 mb-2">
+                        <span class="text-red-500" data-i18n="dow-su">อา</span>
+                        <span data-i18n="dow-mo">จ</span>
+                        <span data-i18n="dow-tu">อ</span>
+                        <span data-i18n="dow-we">พ</span>
+                        <span data-i18n="dow-th">พฤ</span>
+                        <span data-i18n="dow-fr">ศ</span>
+                        <span class="text-indigo-500" data-i18n="dow-sa">ส</span>
+                    </div>
+
+                    <!-- Calendar Grid Days -->
+                    <div id="calendar-days" class="grid grid-cols-7 gap-1 text-center text-sm mb-4">
+                        <!-- Javascript will inject days here -->
+                    </div>
+
+                    <!-- Upcoming Holidays Notification Box -->
+                    <div id="upcoming-box" class="bg-amber-50 border border-amber-200 rounded-xl p-3 space-y-2 transition-colors">
+                        <div class="flex items-center justify-between text-sm font-bold text-amber-800">
+                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-triangle-exclamation text-amber-600"></i> <span data-i18n="upcoming-holiday">วันหยุดที่กำลังจะมาถึง</span></span>
+                            <span class="text-xs bg-amber-200 text-amber-900 px-1.5 py-0.5 rounded" data-i18n="this-month">เดือนนี้</span>
+                        </div>
+                        <ul id="upcoming-holiday-list" class="text-xs text-amber-900 space-y-1">
+                            <!-- Javascript will inject upcoming holidays -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Legend / Note -->
+                <div class="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 transition-colors">
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-2.5 h-2.5 rounded-full bg-red-500 inline-block"></span> <span data-i18n="legend-holiday">วันหยุด</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-2.5 h-2.5 rounded-full bg-indigo-600 inline-block"></span> <span data-i18n="legend-today">วันนี้</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: PDF Production Plan Upload & Viewer (2 Columns, Top) -->
+            <section class="ui-card bg-white p-6 rounded-2xl shadow-sm border border-slate-200 lg:col-span-2 flex flex-col justify-between transition-colors">
+                <div>
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+                        <div>
+                            <h2 id="pdf-section-title" class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-file-pdf text-red-500"></i> จัดการแผนการผลิตประจำวัน/สัปดาห์ (PDF)
+                            </h2>
+                            <p id="pdf-section-desc" class="text-sm text-slate-500">อัปโหลดไฟล์ PDF แผนการผลิตเพื่อแสดงผลแบบเรียลไทม์ให้ทีมงานตรวจสอบ</p>
+                        </div>
+                        <label class="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-md transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> <span data-i18n="upload-pdf">อัปโหลดไฟล์ PDF ใหม่</span>
+                            <input type="file" id="pdf-upload" accept=".pdf" class="hidden" onchange="handlePdfUpload(event)">
+                        </label>
+                    </div>
+
+                    <!-- Upload Box / Compact PDF Display -->
+                    <div id="pdf-container" class="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center bg-slate-50 flex flex-col items-center justify-center transition-colors">
+                        <div id="no-file-state" class="space-y-2 py-6">
+                            <i class="fa-regular fa-file-pdf text-3xl text-slate-400"></i>
+                            <p id="pdf-empty-text" class="text-sm font-medium text-slate-600">ยังไม่มีไฟล์แผนการผลิตที่อัปโหลดในระบบ</p>
+                            <p id="pdf-empty-sub" class="text-xs text-slate-400">คลิกปุ่มอัปโหลดด้านบนเพื่อเลือกไฟล์ .pdf</p>
+                        </div>
+                        <div id="file-uploaded-state" class="hidden w-full space-y-3">
+                            <div id="pdf-file-card" class="flex items-center justify-between bg-white p-3 rounded-xl border border-slate-200 shadow-sm transition-colors">
+                                <div class="flex items-center space-x-3 text-left">
+                                    <div class="bg-red-50 text-red-500 p-2.5 rounded-lg text-base">
+                                        <i class="fa-solid fa-file-pdf"></i>
+                                    </div>
+                                    <div>
+                                        <h4 id="file-name" class="font-bold text-sm text-slate-800"></h4>
+                                        <p class="text-xs text-slate-400"><span data-i18n="uploaded-at">อัปโหลดเมื่อ:</span> <span id="upload-time">-</span></p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <button onclick="openPdfZoom()" class="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-xs font-medium rounded-lg transition-colors cursor-pointer flex items-center gap-1" title="ขยายใหญ่">
+                                        <i class="fa-solid fa-expand"></i> <span data-i18n="zoom-pdf">ขยายใหญ่</span>
+                                    </button>
+                                    <button onclick="removePdf()" class="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-medium rounded-lg transition-colors cursor-pointer">
+                                        <i class="fa-solid fa-trash-can mr-1"></i> <span data-i18n="delete-file">ลบไฟล์</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Compact Realtime PDF Embedded Viewer (Height 200px) -->
+                            <div class="relative w-full h-[200px] bg-slate-900 rounded-xl overflow-hidden border border-slate-300 shadow-inner group cursor-pointer" onclick="openPdfZoom()">
+                                <embed id="pdf-viewer" src="" type="application/pdf" width="100%" height="100%" class="pointer-events-none" />
+                                <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold gap-2">
+                                    <i class="fa-solid fa-magnifying-glass-plus text-base"></i> คลิกเพื่อขยายแผนการผลิต
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Section 3: Quick Access Links for Line Managers -->
+        <section class="ui-card bg-white p-6 rounded-2xl shadow-sm border border-slate-200 transition-colors">
+            <h2 id="links-section-title" class="text-base font-bold text-slate-800 flex items-center gap-2 mb-4">
+                <i class="fa-solid fa-link text-indigo-600"></i> ลิงก์ระบบงานด่วน (Quick Access Systems)
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Link 1 -->
+                <a href="#" target="_blank" class="link-card group bg-slate-50 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 p-4 rounded-xl flex items-center space-x-3 transition-all duration-200 shadow-2xs">
+                    <div class="bg-indigo-100 group-hover:bg-indigo-600 text-indigo-600 group-hover:text-white p-3 rounded-xl transition-colors text-lg">
+                        <i class="fa-solid fa-tags"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800 group-hover:text-indigo-900 transition-colors" data-i18n="link-1">ระบบเบิก-คืน ฉลาก</h4>
+                        <p class="text-xs text-slate-400">Label Control System</p>
+                    </div>
+                </a>
+                <!-- Link 2 -->
+                <a href="#" target="_blank" class="link-card group bg-slate-50 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 p-4 rounded-xl flex items-center space-x-3 transition-all duration-200 shadow-2xs">
+                    <div class="bg-amber-100 group-hover:bg-amber-600 text-amber-600 group-hover:text-white p-3 rounded-xl transition-colors text-lg">
+                        <i class="fa-solid fa-warehouse"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800 group-hover:text-indigo-900 transition-colors" data-i18n="link-2">ระบบเบิก-คืน คลังสินค้า</h4>
+                        <p class="text-xs text-slate-400">Warehouse & Stock</p>
+                    </div>
+                </a>
+                <!-- Link 3 (ชี้ไป employee.html) -->
+                <a href="employee.html" target="_blank" class="link-card group bg-slate-50 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 p-4 rounded-xl flex items-center space-x-3 transition-all duration-200 shadow-2xs">
+                    <div class="bg-emerald-100 group-hover:bg-emerald-600 text-emerald-600 group-hover:text-white p-3 rounded-xl transition-colors text-lg">
+                        <i class="fa-solid fa-users-gear"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800 group-hover:text-indigo-900 transition-colors" data-i18n="link-3">ระบบพนักงาน โอที หัวหน้าไลน์ผลิต</h4>
+                        <p class="text-xs text-slate-400">OT & Staff Management</p>
+                    </div>
+                </a>
+                <!-- Link 4 (ชี้ไป product.html) -->
+                <a href="product.html" target="_blank" class="link-card group bg-slate-50 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 p-4 rounded-xl flex items-center space-x-3 transition-all duration-200 shadow-2xs">
+                    <div class="bg-blue-100 group-hover:bg-blue-600 text-blue-600 group-hover:text-white p-3 rounded-xl transition-colors text-lg">
+                        <i class="fa-solid fa-print"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800 group-hover:text-indigo-900 transition-colors" data-i18n="link-4">ระบบช่วยทำหัวยิง วันที่ผลิต/หมดอายุ</h4>
+                        <p class="text-xs text-slate-400">Mfg/Exp Date Generator</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Grid Layout for Announcements & Minimal Calculator (2 Columns in Lower Row) -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Section 4: Company & Line Announcements (2 Columns) -->
+            <section class="ui-card bg-white p-6 rounded-2xl shadow-sm border border-slate-200 lg:col-span-2 flex flex-col justify-between transition-colors">
+                <div>
+                    <div class="flex justify-between items-center mb-4 border-b pb-3">
+                        <h2 id="announcement-title" class="text-base font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-bullhorn text-amber-500"></i> ประกาศบริษัท & ประกาศในไลน์ผลิต
+                        </h2>
+                        <button onclick="openAnnouncementModal()" class="ui-btn-sub bg-indigo-50 hover:bg-indigo-100 text-indigo-600 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1 cursor-pointer">
+                            <i class="fa-solid fa-plus"></i> <span data-i18n="add-announcement">เพิ่มประกาศใหม่</span>
+                        </button>
+                    </div>
+
+                    <!-- Announcements List Container -->
+                    <div id="announcement-list" class="space-y-3 max-h-[260px] overflow-y-auto pr-1">
+                        <!-- Announcement Item 1 -->
+                        <div class="announcement-item bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-1 transition-colors">
+                            <div class="flex justify-between items-start">
+                                <span class="bg-red-100 text-red-700 text-[10px] font-bold px-2 py-0.5 rounded-full">ประกาศบริษัท</span>
+                                <span class="text-[10px] text-slate-400">24 ก.ย. 2569</span>
+                            </div>
+                            <h4 class="font-bold text-sm text-slate-800">กำหนดการตรวจประเมิน 5ส ประจำเดือนกันยายน 2569</h4>
+                            <p class="text-xs text-slate-600">ขอให้หัวหน้ากะทุกไลน์เตรียมความพร้อมพื้นที่ปฏิบัติงาน และจัดระเบียบอุปกรณ์ให้เรียบร้อยก่อนเวลา 10:00 น.</p>
+                        </div>
+                        <!-- Announcement Item 2 -->
+                        <div class="announcement-item bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-1 transition-colors">
+                            <div class="flex justify-between items-start">
+                                <span class="bg-indigo-100 text-indigo-700 text-[10px] font-bold px-2 py-0.5 rounded-full">ประกาศในไลน์</span>
+                                <span class="text-[10px] text-slate-400">22 ก.ย. 2569</span>
+                            </div>
+                            <h4 class="font-bold text-sm text-slate-800">เปลี่ยนรอบเวลาบำรุงรักษาเครื่องจักรประจำสัปดาห์</h4>
+                            <p class="text-xs text-slate-600">เลื่อนเวลาการทำ Preventive Maintenance ของไลน์บรรจุขวด 700ml เป็นวันเสาร์นี้ เวลา 13:00 - 15:00 น.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 5: Minimal Calculator (1 Column) -->
+            <section class="ui-card bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between transition-colors">
+                <div>
+                    <h2 class="text-base font-bold text-slate-800 flex items-center gap-2 mb-4">
+                        <i class="fa-solid fa-calculator text-emerald-600"></i> <span data-i18n="calc-title">เครื่องคิดเลขด่วนหน้าไลน์</span>
+                    </h2>
+                    
+                    <!-- Calculator Screen -->
+                    <div id="calc-screen" class="bg-slate-900 text-white p-3.5 rounded-xl text-right text-2xl font-mono mb-4 tracking-wider overflow-x-auto shadow-inner border border-slate-800">
+                        0
+                    </div>
+
+                    <!-- Calculator Keypad -->
+                    <div class="grid grid-cols-4 gap-2 text-sm">
+                        <button onclick="calcClear()" class="bg-red-50 hover:bg-red-100 text-red-600 font-bold py-2.5 rounded-xl transition-colors cursor-pointer">C</button>
+                        <button onclick="calcPress('/')" class="calc-op-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl transition-colors cursor-pointer">÷</button>
+                        <button onclick="calcPress('*')" class="calc-op-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl transition-colors cursor-pointer">×</button>
+                        <button onclick="calcPress('-')" class="calc-op-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl transition-colors cursor-pointer">-</button>
+                        
+                        <button onclick="calcPress('7')" class="calc-num-btn bg-slate-50 hover:bg-slate-100 text-slate-800 font-bold py-2.5 rounded-xl transition-colors cursor-pointer border border-slate-100">7</button>
+                        <button onclick="calcPress('8')" class="calc-num-btn bg-slate-50 hover:bg-slate-100 text-slate-800 font-bold py-2.5 rounded-xl transition-colors cursor-pointer border border-slate-100">8</button>
+                        <button onclick="calcPress('9')" class="calc-num-btn bg-slate-50 hover:bg-slate-100 text-slate-800 font-bold py-2.5 rounded-xl transition-colors cursor-pointer border border-slate-100">9</button>
+                        <button onclick="calcPress('+')" class="calc-op-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl transition-colors cursor-pointer row-span-2 flex items-center justify-center">+</button>
+                        
+                        <button onclick="calcPress('4')" class="calc-num-btn bg-slate-50 hover:bg-slate-100 text-slate-800 font-bold py-2.5 rounded-xl transition-colors cursor-pointer border border-slate-100">4</button>
+                        <button onclick="calcPress('5')" class="calc-num-btn bg-slate-50 hover:bg-slate-100 text-slate-800 font-bold py-2.5 rounded-xl transition-colors cursor-pointer border border-slate-100">5</button>
+                        <button onclick="calcPress('6')" class="calc-num-btn bg-slate-50 hover:bg-slate-100 text-slate-800 font-bold py-2.5 rounded-xl transition-colors cursor-pointer border border-slate-100">6</button>
+                        
+                        <button onclick="calcPress('1')" class="calc-num-btn bg-slate-50 hover:bg-slate-100 text-slate-800 font-bold py-2.5 rounded-xl transition-colors cursor-pointer border border-slate-100">1</button>
+                        <button onclick="calcPress('2')" class="calc-num-btn bg-slate-50 hover:bg-slate-100 text-slate-800 font-bold py-2.5 rounded-xl transition-colors cursor-pointer border border-slate-100">2</button>
+                        <button onclick="calcPress('3')" class="calc-num-btn bg-slate-50 hover:bg-slate-100 text-slate-800 font-bold py-2.5 rounded-xl transition-colors cursor-pointer border border-slate-100">3</button>
+                        <button onclick="calcCalculate()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl transition-colors cursor-pointer row-span-2 flex items-center justify-center">=</button>
+                        
+                        <button onclick="calcPress('0')" class="calc-num-btn bg-slate-50 hover:bg-slate-100 text-slate-800 font-bold py-2.5 rounded-xl transition-colors cursor-pointer border border-slate-100 col-span-2">0</button>
+                        <button onclick="calcPress('.')" class="calc-num-btn bg-slate-50 hover:bg-slate-100 text-slate-800 font-bold py-2.5 rounded-xl transition-colors cursor-pointer border border-slate-100">.</button>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Section 6: Memory Gallery with Realtime Image Upload, Edit, and Delete -->
+        <section class="ui-card bg-white p-6 rounded-2xl shadow-sm border border-slate-200 transition-colors">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <div>
+                    <h2 id="gallery-section-title" class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-images text-indigo-600"></i> ภาพเก็บความทรงจำ & กิจกรรมทีมผลิต
+                    </h2>
+                    <p id="gallery-section-desc" class="text-sm text-slate-500">คลิกที่รูปเพื่อดูขนาดใหญ่ • สามารถแก้ไขชื่อหรือลบรูปภาพได้ตามต้องการ</p>
+                </div>
+                <label class="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 rounded-xl text-sm font-medium shadow-md transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-camera"></i> <span data-i18n="upload-photo">อัปโหลดรูปภาพใหม่</span>
+                    <input type="file" id="photo-upload" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)">
+                </label>
+            </div>
+
+            <!-- Gallery Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="gallery-grid">
+                <!-- Photo 1 -->
+                <div class="gallery-item group relative rounded-xl overflow-hidden shadow-sm bg-slate-100 border border-slate-200 aspect-video flex items-center justify-center transition-colors">
+                    <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80" alt="Team Work" onclick="openLightbox(this.src, this.dataset.caption)" data-caption="ทีมกะ A ประชุมสั้นหน้างาน (Morning Brief)" class="w-full h-full object-cover cursor-pointer group-hover:scale-105 transition-transform duration-300">
+                    
+                    <div class="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                        <button onclick="editPhotoCaption(this)" class="bg-black/60 hover:bg-indigo-600 text-white w-7 h-7 rounded-lg flex items-center justify-center text-sm transition-colors cursor-pointer" title="เปลี่ยนชื่อภาพ">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button onclick="confirmDeletePhoto(this)" class="bg-black/60 hover:bg-red-600 text-white w-7 h-7 rounded-lg flex items-center justify-center text-sm transition-colors cursor-pointer" title="ลบภาพ">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+
+                    <div onclick="openLightbox(this.previousElementSibling.previousElementSibling.src, this.querySelector('.caption-text').innerText)" class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-3 text-white cursor-pointer">
+                        <p class="text-sm font-bold caption-text">ทีมกะ A ประชุมสั้นหน้างาน (Morning Brief)</p>
+                        <p class="text-xs text-slate-300">12 ต.ค. 2569</p>
+                    </div>
+                </div>
+
+                <!-- Photo 2 -->
+                <div class="gallery-item group relative rounded-xl overflow-hidden shadow-sm bg-slate-100 border border-slate-200 aspect-video flex items-center justify-center transition-colors">
+                    <img src="https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=600&q=80" alt="5S Activity" onclick="openLightbox(this.src, this.dataset.caption)" data-caption="กิจกรรม 5ส Big Cleaning Day" class="w-full h-full object-cover cursor-pointer group-hover:scale-105 transition-transform duration-300">
+                    
+                    <div class="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                        <button onclick="editPhotoCaption(this)" class="bg-black/60 hover:bg-indigo-600 text-white w-7 h-7 rounded-lg flex items-center justify-center text-sm transition-colors cursor-pointer" title="เปลี่ยนชื่อภาพ">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button onclick="confirmDeletePhoto(this)" class="bg-black/60 hover:bg-red-600 text-white w-7 h-7 rounded-lg flex items-center justify-center text-sm transition-colors cursor-pointer" title="ลบภาพ">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+
+                    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-3 text-white cursor-pointer">
+                        <p class="text-sm font-bold caption-text">กิจกรรม 5ส Big Cleaning Day</p>
+                        <p class="text-xs text-slate-300">5 ต.ค. 2569</p>
+                    </div>
+                </div>
+
+                <!-- Photo 3 -->
+                <div class="gallery-item group relative rounded-xl overflow-hidden shadow-sm bg-slate-100 border border-slate-200 aspect-video flex items-center justify-center transition-colors">
+                    <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=600&q=80" alt="Team Celebration" onclick="openLightbox(this.src, this.dataset.caption)" data-caption="ฉลองความสำเร็จยอดผลิตทะลุเป้า" class="w-full h-full object-cover cursor-pointer group-hover:scale-105 transition-transform duration-300">
+                    
+                    <div class="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                        <button onclick="editPhotoCaption(this)" class="bg-black/60 hover:bg-indigo-600 text-white w-7 h-7 rounded-lg flex items-center justify-center text-sm transition-colors cursor-pointer" title="เปลี่ยนชื่อภาพ">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button onclick="confirmDeletePhoto(this)" class="bg-black/60 hover:bg-red-600 text-white w-7 h-7 rounded-lg flex items-center justify-center text-sm transition-colors cursor-pointer" title="ลบภาพ">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+
+                    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-3 text-white cursor-pointer">
+                        <p class="text-sm font-bold caption-text">ฉลองความสำเร็จยอดผลิตทะลุเป้า</p>
+                        <p class="text-xs text-slate-300">28 ก.ย. 2569</p>
+                    </div>
+                </div>
+
+                <!-- Photo 4 -->
+                <div class="gallery-item group relative rounded-xl overflow-hidden shadow-sm bg-slate-100 border border-slate-200 aspect-video flex items-center justify-center transition-colors">
+                    <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80" alt="Safety Training" onclick="openLightbox(this.src, this.dataset.caption)" data-caption="อบรมความปลอดภัยประจำปี (Safety Day)" class="w-full h-full object-cover cursor-pointer group-hover:scale-105 transition-transform duration-300">
+                    
+                    <div class="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                        <button onclick="editPhotoCaption(this)" class="bg-black/60 hover:bg-indigo-600 text-white w-7 h-7 rounded-lg flex items-center justify-center text-sm transition-colors cursor-pointer" title="เปลี่ยนชื่อภาพ">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button onclick="confirmDeletePhoto(this)" class="bg-black/60 hover:bg-red-600 text-white w-7 h-7 rounded-lg flex items-center justify-center text-sm transition-colors cursor-pointer" title="ลบภาพ">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+
+                    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-3 text-white cursor-pointer">
+                        <p class="text-sm font-bold caption-text">อบรมความปลอดภัยประจำปี (Safety Day)</p>
+                        <p class="text-xs text-slate-300">15 ก.ย. 2569</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer id="page-footer" class="bg-white border-t border-slate-200 py-4 text-center text-sm text-slate-500 transition-colors">
+        <span id="footer-text">ส่วนงานหัวหน้าไลน์ผลิตน้ำปลา ทิพรส &copy; 2026 | พัฒนาขึ้นเพื่อความสะดวก รวดเร็ว และมีประสิทธิภาพสูงสุด</span>
+    </footer>
+
+    <!-- Holiday Settings Modal -->
+    <div id="holiday-modal" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden items-center justify-center z-50 p-4">
+        <div id="modal-content" class="bg-white text-slate-800 rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4 transition-colors">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="text-base font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-days text-indigo-600"></i> <span data-i18n="modal-title">ตั้งค่าวันหยุดประจำสัปดาห์ & นักขัตฤกษ์ 2569</span>
+                </h3>
+                <button onclick="closeHolidaySettings()" class="text-slate-400 hover:text-slate-600 text-base cursor-pointer">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="space-y-4 text-sm">
+                <div>
+                    <label class="font-semibold block mb-1" data-i18n="weekly-holiday">วันหยุดประจำสัปดาห์:</label>
+                    <select id="weekly-holiday-select" onchange="updateWeeklyHoliday(this)" class="ui-input w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 focus:outline-indigo-600 transition-colors">
+                        <option value="0" data-i18n="opt-sunday">วันอาทิตย์</option>
+                        <option value="6" data-i18n="opt-sat-sun">วันเสาร์ - อาทิตย์</option>
+                        <option value="none" data-i18n="opt-none">ไม่มีวันหยุดประจำสัปดาห์</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="font-semibold block mb-1" data-i18n="add-holiday">เพิ่ม/แก้ไข วันหยุดพิเศษ:</label>
+                    <div class="flex gap-2 mb-2">
+                        <input type="number" id="new-holiday-day" placeholder="วันที่ (เช่น 15)" min="1" max="31" class="ui-input w-1/3 bg-slate-50 border border-slate-200 rounded-xl p-2 transition-colors">
+                        <input type="text" id="new-holiday-name" placeholder="ชื่อวันหยุด" class="ui-input w-2/3 bg-slate-50 border border-slate-200 rounded-xl p-2 transition-colors">
+                    </div>
+                    <button onclick="addCustomHoliday()" class="ui-btn-sub w-full bg-slate-100 hover:bg-slate-200 py-2 rounded-xl font-medium transition-colors cursor-pointer" data-i18n="save-holiday">
+                        + บันทึกวันหยุดนี้
+                    </button>
+                </div>
+                <div>
+                    <label class="font-semibold block mb-1" data-i18n="holiday-list-month">รายการวันหยุดที่เป็นทางการในปี 2569 (เดือนนี้):</label>
+                    <div id="modal-holiday-list" class="max-h-36 overflow-y-auto bg-slate-50 border border-slate-200 rounded-xl p-2 space-y-1 transition-colors">
+                        <!-- รายการวันหยุดใน Modal -->
+                    </div>
+                </div>
+            </div>
+            <div class="pt-2 flex justify-end">
+                <button onclick="closeHolidaySettings()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-xl transition-colors cursor-pointer" data-i18n="done">
+                    เสร็จสิ้น
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Announcement Modal -->
+    <div id="announcement-modal" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden items-center justify-center z-50 p-4">
+        <div id="announcement-modal-content" class="bg-white text-slate-800 rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4 transition-colors">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="text-base font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-bullhorn text-amber-500"></i> <span data-i18n="ann-modal-title">เพิ่มประกาศใหม่</span>
+                </h3>
+                <button onclick="closeAnnouncementModal()" class="text-slate-400 hover:text-slate-600 text-base cursor-pointer">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="space-y-4 text-sm">
+                <div>
+                    <label class="font-semibold block mb-1" data-i18n="ann-type">ประเภทประกาศ:</label>
+                    <select id="new-ann-type" class="ui-input w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 focus:outline-indigo-600 transition-colors">
+                        <option value="company" data-i18n="ann-opt-company">ประกาศบริษัท</option>
+                        <option value="line" data-i18n="ann-opt-line">ประกาศในไลน์</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="font-semibold block mb-1" data-i18n="ann-title-label">หัวข้อประกาศ:</label>
+                    <input type="text" id="new-ann-title" placeholder="ระบุหัวข้อประกาศ..." class="ui-input w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 transition-colors">
+                </div>
+                <div>
+                    <label class="font-semibold block mb-1" data-i18n="ann-desc-label">รายละเอียด:</label>
+                    <textarea id="new-ann-desc" placeholder="ระบุรายละเอียดประกาศ..." rows="3" class="ui-input w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 transition-colors"></textarea>
+                </div>
+            </div>
+            <div class="pt-2 flex justify-end space-x-2">
+                <button onclick="closeAnnouncementModal()" class="ui-btn-sub px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium rounded-xl transition-colors cursor-pointer" data-i18n="cancel">
+                    ยกเลิก
+                </button>
+                <button onclick="saveNewAnnouncement()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-xl transition-colors cursor-pointer" data-i18n="save">
+                    บันทึกประกาศ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox Modal for Photo & PDF Zoom -->
+    <div id="lightbox-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4" onclick="closeLightbox()">
+        <div class="relative max-w-5xl w-full h-[90vh] bg-slate-900 rounded-2xl overflow-hidden shadow-2xl p-4 flex flex-col items-center" onclick="event.stopPropagation()">
+            <button onclick="closeLightbox()" class="absolute top-4 right-4 bg-black/60 hover:bg-black text-white px-3 py-1.5 rounded-full text-sm transition-colors z-10 flex items-center gap-1 cursor-pointer">
+                <i class="fa-solid fa-xmark text-base"></i> <span data-i18n="close">ปิด</span>
+            </button>
+            <div id="lightbox-content-container" class="w-full h-full flex items-center justify-center overflow-auto">
+                <!-- Content will be injected dynamically (img or embed) -->
+            </div>
+            <p id="lightbox-caption" class="text-base font-semibold text-white mt-3 mb-1"></p>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden items-center justify-center z-50 p-4">
+        <div id="delete-content" class="bg-white text-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-xl text-center space-y-4 transition-colors">
+            <div class="w-14 h-14 bg-red-50 text-red-500 rounded-full flex items-center justify-center text-2xl mx-auto">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="text-base font-bold" data-i18n="delete-confirm-title">ยืนยันการลบรูปภาพ?</h3>
+            <p class="text-sm text-slate-500" data-i18n="delete-confirm-desc">คุณแน่ใจหรือไม่ว่าต้องการลบรูปภาพนี้ออกจากระบบ? การกระทำนี้ไม่สามารถย้อนกลับได้</p>
+            <div class="pt-2 flex space-x-2">
+                <button onclick="closeDeleteModal()" class="ui-btn-sub w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-sm font-medium rounded-xl transition-colors cursor-pointer" data-i18n="cancel">
+                    ยกเลิก
+                </button>
+                <button id="confirm-delete-btn" class="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-xl transition-colors cursor-pointer" data-i18n="confirm">
+                    ยืนยันลบ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        let isDarkMode = false;
+        let currentLang = 'th';
+        let currentDate = new Date();
+        let weeklyHolidaySetting = "0";
+        let currentPdfUrl = "";
+        let currentPdfName = "";
+
+        // Calculator State
+        let calcDisplay = "0";
+
+        // Translations Dictionary
+        const translations = {
+            th: {
+                mainHeading: "หน้าหลัก ส่วนงานหัวหน้าไลน์ผลิตน้ำปลา ทิพรส",
+                subHeading: "ระบบบริหารจัดการและศูนย์รวมข้อมูลหัวหน้าไลน์ผลิต",
+                calTitle: "ปฏิทินวันทำงาน & วันหยุด 2569",
+                settings: "ตั้งค่าวันหยุด",
+                dowSu: "อา", dowMo: "จ", dowTu: "อ", dowWe: "พ", dowTh: "พฤ", dowFr: "ศ", dowSa: "ส",
+                upcomingHoliday: "วันหยุดที่กำลังจะมาถึง",
+                thisMonth: "เดือนนี้",
+                legendHoliday: "วันหยุด",
+                legendToday: "วันนี้",
+                pdfSectionTitle: "จัดการแผนการผลิตประจำวัน/สัปดาห์ (PDF)",
+                pdfSectionDesc: "อัปโหลดไฟล์ PDF แผนการผลิตเพื่อแสดงผลแบบเรียลไทม์ให้ทีมงานตรวจสอบ",
+                uploadPdf: "อัปโหลดไฟล์ PDF ใหม่",
+                pdfEmptyText: "ยังไม่มีไฟล์แผนการผลิตที่อัปโหลดในระบบ",
+                pdfEmptySub: "คลิกปุ่มอัปโหลดด้านบนเพื่อเลือกไฟล์ .pdf",
+                uploadedAt: "อัปโหลดเมื่อ:",
+                deleteFile: "ลบไฟล์",
+                zoomPdf: "ขยายใหญ่",
+                linksSectionTitle: "ลิงก์ระบบงานด่วน (Quick Access Systems)",
+                link1: "ระบบเบิก-คืน ฉลาก",
+                link2: "ระบบเบิก-คืน คลังสินค้า",
+                link3: "ระบบพนักงาน โอที หัวหน้าไลน์ผลิต",
+                link4: "ระบบช่วยทำหัวยิง วันที่ผลิต/หมดอายุ",
+                announcementTitle: "ประกาศบริษัท & ประกาศในไลน์ผลิต",
+                addAnnouncement: "เพิ่มประกาศใหม่",
+                calcTitle: "เครื่องคิดเลขด่วนหน้าไลน์",
+                gallerySectionTitle: "ภาพเก็บความทรงจำ & กิจกรรมทีมผลิต",
+                gallerySectionDesc: "คลิกที่รูปเพื่อดูขนาดใหญ่ • สามารถแก้ไขชื่อหรือลบรูปภาพได้ตามต้องการ",
+                uploadPhoto: "อัปโหลดรูปภาพใหม่",
+                footerText: "ส่วนงานหัวหน้าไลน์ผลิตน้ำปลา ทิพรส &copy; 2026 | พัฒนาขึ้นเพื่อความสะดวก รวดเร็ว และมีประสิทธิภาพสูงสุด",
+                modalTitle: "ตั้งค่าวันหยุดประจำสัปดาห์ & นักขัตฤกษ์ 2569",
+                weeklyHoliday: "วันหยุดประจำสัปดาห์:",
+                optSunday: "วันอาทิตย์",
+                optSatSun: "วันเสาร์ - อาทิตย์",
+                optNone: "ไม่มีวันหยุดประจำสัปดาห์",
+                addHoliday: "เพิ่ม/แก้ไข วันหยุดพิเศษ:",
+                saveHoliday: "+ บันทึกวันหยุดนี้",
+                holidayListMonth: "รายการวันหยุดที่เป็นทางการในปี 2569 (เดือนนี้):",
+                done: "เสร็จสิ้น",
+                close: "ปิด",
+                annModalTitle: "เพิ่มประกาศใหม่",
+                annType: "ประเภทประกาศ:",
+                annOptCompany: "ประกาศบริษัท",
+                annOptLine: "ประกาศในไลน์",
+                annTitleLabel: "หัวข้อประกาศ:",
+                annDescLabel: "รายละเอียด:",
+                save: "บันทึกประกาศ",
+                cancel: "ยกเลิก",
+                deleteConfirmTitle: "ยืนยันการลบรูปภาพ?",
+                deleteConfirmDesc: "คุณแน่ใจหรือไม่ว่าต้องการลบรูปภาพนี้ออกจากระบบ? การกระทำนี้ไม่สามารถย้อนกลับได้",
+                confirm: "ยืนยันลบ",
+                sundayName: "วันอาทิตย์",
+                weeklyHolidayName: "วันหยุดประจำสัปดาห์"
+            },
+            en: {
+                mainHeading: "Tiparos Fish Sauce Production Line Manager Portal",
+                subHeading: "Management system and information hub for production line managers",
+                calTitle: "Work & Holiday Calendar 2026",
+                settings: "Holiday Settings",
+                dowSu: "Su", dowMo: "Mo", dowTu: "Tu", dowWe: "We", dowTh: "Th", dowFr: "Fr", dowSa: "Sa",
+                upcomingHoliday: "Upcoming Holidays",
+                thisMonth: "This Month",
+                legendHoliday: "Holiday",
+                legendToday: "Today",
+                pdfSectionTitle: "Daily/Weekly Production Plan (PDF)",
+                pdfSectionDesc: "Upload PDF production plan for real-time team inspection",
+                uploadPdf: "Upload New PDF",
+                pdfEmptyText: "No production plan PDF uploaded yet",
+                pdfEmptySub: "Click the upload button above to select a .pdf file",
+                uploadedAt: "Uploaded at:",
+                deleteFile: "Delete File",
+                zoomPdf: "Zoom",
+                linksSectionTitle: "Quick Access Systems",
+                link1: "Label Requisition & Return System",
+                link2: "Warehouse Requisition & Return",
+                link3: "OT & Staff Management System",
+                link4: "Mfg/Exp Date Generator Helper",
+                announcementTitle: "Company & Line Announcements",
+                addAnnouncement: "Add Announcement",
+                calcTitle: "Quick Line Calculator",
+                gallerySectionTitle: "Team Memories & Production Activities",
+                gallerySectionDesc: "Click image to enlarge • Edit titles or delete photos as needed",
+                uploadPhoto: "Upload New Photo",
+                footerText: "Tiparos Fish Sauce Production Line Manager Portal &copy; 2026 | Developed for maximum efficiency",
+                modalTitle: "Weekly & Official Holiday Settings 2026",
+                weeklyHoliday: "Weekly Holiday:",
+                optSunday: "Sunday",
+                optSatSun: "Saturday - Sunday",
+                optNone: "No Weekly Holiday",
+                addHoliday: "Add/Edit Special Holiday:",
+                saveHoliday: "+ Save Holiday",
+                holidayListMonth: "Official Holidays in 2026 (This Month):",
+                done: "Done",
+                close: "Close",
+                annModalTitle: "Add New Announcement",
+                annType: "Announcement Type:",
+                annOptCompany: "Company Announcement",
+                annOptLine: "Line Announcement",
+                annTitleLabel: "Title:",
+                annDescLabel: "Description:",
+                save: "Save Announcement",
+                cancel: "Cancel",
+                deleteConfirmTitle: "Confirm Delete Photo?",
+                deleteConfirmDesc: "Are you sure you want to delete this photo? This action cannot be undone.",
+                confirm: "Confirm",
+                sundayName: "Sunday",
+                weeklyHolidayName: "Weekly Holiday"
+            }
+        };
+
+        // Official Holidays Dataset
+        let officialHolidays2026 = {
+            "2026-0": { 1: "วันขึ้นปีใหม่ / New Year's Day", 2: "วันหยุดเพิ่มพิเศษ / Special Holiday" },
+            "2026-2": { 3: "วันมาฆบูชา / Makha Bucha Day" },
+            "2026-3": { 6: "วันจักรี / Chakri Day", 13: "วันสงกรานต์ / Songkran", 14: "วันสงกรานต์ / Songkran", 15: "วันสงกรานต์ / Songkran" },
+            "2026-4": { 1: "วันแรงงาน / National Labour Day", 4: "วันฉัตรมงคล / Coronation Day", 13: "วันพืชมงคล / Royal Ploughing Ceremony" },
+            "2026-5": { 1: "ชดเชยวันวิสาขบูชา / Visakha Bucha Day", 3: "วันเฉลิมฯ พระราชินี / Queen's Birthday" },
+            "2026-6": { 28: "วันเฉลิมฯ ร.10 / King's Birthday", 29: "วันอาสาฬหบูชา / Asalha Bucha Day", 30: "วันเข้าพรรษา / Buddhist Lent Day" },
+            "2026-7": { 12: "วันแม่แห่งชาติ / H.M. Queen Sirikit's Birthday / Mother's Day" },
+            "2026-9": { 13: "วันนวมินทรมหาราช", 23: "วันปิยมหาราช / Chulalongkorn Day" },
+            "2026-11": { 7: "ชดเชยวันพ่อแห่งชาติ / Father's Day", 10: "วันรัฐธรรมนูญ / Constitution Day", 31: "วันสิ้นปี / New Year's Eve" }
+        };
+
+        document.addEventListener("DOMContentLoaded", function() {
+            try {
+                const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                const dateEl = document.getElementById('current-date');
+                if(dateEl) {
+                    dateEl.innerText = new Date().toLocaleDateString('th-TH', dateOptions);
+                }
+            } catch (e) {
+                console.error("Date initialization error:", e);
+            }
+
+            if (localStorage.getItem('theme') === 'dark') {
+                toggleDarkMode(true);
+            } else {
+                renderCalendar();
+            }
+        });
+
+        // --- 1. Dark / Light Mode Toggle ---
+        function toggleDarkMode(forcedState) {
+            if (forcedState !== undefined) {
+                isDarkMode = forcedState;
+            } else {
+                isDarkMode = !isDarkMode;
+            }
+
+            const body = document.getElementById('page-body');
+            const footer = document.getElementById('page-footer');
+            const themeIcon = document.getElementById('theme-icon');
+            const themeLabel = document.getElementById('theme-label');
+            const cards = document.querySelectorAll('.ui-card');
+            const subBtns = document.querySelectorAll('.ui-btn-sub');
+            const calHeaderBox = document.getElementById('cal-header-box');
+            const calNavBtns = document.querySelectorAll('.cal-nav-btn');
+            const upcomingBox = document.getElementById('upcoming-box');
+            const pdfContainer = document.getElementById('pdf-container');
+            const pdfFileCard = document.getElementById('pdf-file-card');
+            const linkCards = document.querySelectorAll('.link-card');
+            const announcementItems = document.querySelectorAll('.announcement-item');
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            const modalContent = document.getElementById('modal-content');
+            const announcementModalContent = document.getElementById('announcement-modal-content');
+            const deleteContent = document.getElementById('delete-content');
+            const uiInputs = document.querySelectorAll('.ui-input');
+            const calcNumBtns = document.querySelectorAll('.calc-num-btn');
+            const calcOpBtns = document.querySelectorAll('.calc-op-btn');
+
+            if (isDarkMode) {
+                if(themeIcon) themeIcon.className = "fa-solid fa-moon";
+                if(themeLabel) themeLabel.innerText = currentLang === 'th' ? 'สว่าง' : 'Light';
+                localStorage.setItem('theme', 'dark');
+
+                if(body) body.className = "bg-slate-950 text-slate-100 min-h-screen flex flex-col transition-colors duration-200";
+                if(footer) footer.className = "bg-slate-900 border-t border-slate-800 py-4 text-center text-sm text-slate-400 transition-colors";
+                
+                cards.forEach(c => c.className = "ui-card bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-800 flex flex-col justify-between transition-colors");
+                subBtns.forEach(b => b.className = "ui-btn-sub bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1 cursor-pointer");
+                if(calHeaderBox) calHeaderBox.className = "flex justify-between items-center bg-slate-800 px-3 py-2 rounded-xl mb-4 transition-colors";
+                calNavBtns.forEach(b => b.className = "cal-nav-btn w-8 h-8 rounded-lg bg-slate-700 text-slate-200 shadow-xs hover:bg-indigo-600 hover:text-white flex items-center justify-center transition-colors cursor-pointer");
+                if(upcomingBox) upcomingBox.className = "bg-amber-950/30 border border-amber-900/50 rounded-xl p-3 space-y-2 transition-colors";
+                if(pdfContainer) pdfContainer.className = "border-2 border-dashed border-slate-700 rounded-xl p-4 text-center bg-slate-950 flex flex-col items-center justify-center transition-colors";
+                if(pdfFileCard) pdfFileCard.className = "flex items-center justify-between bg-slate-900 p-3 rounded-xl border border-slate-800 shadow-sm transition-colors";
+                linkCards.forEach(l => l.className = "link-card group bg-slate-800 hover:bg-indigo-950/50 border border-slate-700 hover:border-indigo-700 p-4 rounded-xl flex items-center space-x-3 transition-all duration-200 shadow-2xs");
+                announcementItems.forEach(a => a.className = "announcement-item bg-slate-800/60 border border-slate-700 rounded-xl p-3.5 space-y-1 transition-colors");
+                galleryItems.forEach(g => g.className = "gallery-item group relative rounded-xl overflow-hidden shadow-sm bg-slate-800 border border-slate-700 aspect-video flex items-center justify-center transition-colors");
+                
+                if(modalContent) modalContent.className = "bg-slate-900 text-slate-100 rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4 transition-colors";
+                if(announcementModalContent) announcementModalContent.className = "bg-slate-900 text-slate-100 rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4 transition-colors";
+                if(deleteContent) deleteContent.className = "bg-slate-900 text-slate-100 rounded-2xl max-w-sm w-full p-6 shadow-xl text-center space-y-4 transition-colors";
+                uiInputs.forEach(i => i.className = "ui-input w-full bg-slate-800 border border-slate-700 rounded-xl p-2 text-slate-100 focus:outline-indigo-600 transition-colors");
+                calcNumBtns.forEach(btn => btn.className = "calc-num-btn bg-slate-800 hover:bg-slate-700 text-slate-100 font-bold py-2.5 rounded-xl transition-colors cursor-pointer border border-slate-700");
+                calcOpBtns.forEach(btn => btn.className = "calc-op-btn bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl transition-colors cursor-pointer border border-slate-700");
+            } else {
+                if(themeIcon) themeIcon.className = "fa-solid fa-sun";
+                if(themeLabel) themeLabel.innerText = currentLang === 'th' ? 'มืด' : 'Dark';
+                localStorage.setItem('theme', 'light');
+
+                if(body) body.className = "bg-slate-50 text-slate-800 min-h-screen flex flex-col transition-colors duration-200";
+                if(footer) footer.className = "bg-white border-t border-slate-200 py-4 text-center text-sm text-slate-500 transition-colors";
+                
+                cards.forEach(c => c.className = "ui-card bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between transition-colors");
+                subBtns.forEach(b => b.className = "ui-btn-sub bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1 cursor-pointer");
+                if(calHeaderBox) calHeaderBox.className = "flex justify-between items-center bg-slate-100 px-3 py-2 rounded-xl mb-4 transition-colors";
+                calNavBtns.forEach(b => b.className = "cal-nav-btn w-8 h-8 rounded-lg bg-white shadow-xs hover:bg-indigo-50 hover:text-indigo-600 flex items-center justify-center transition-colors cursor-pointer");
+                if(upcomingBox) upcomingBox.className = "bg-amber-50 border border-amber-200 rounded-xl p-3 space-y-2 transition-colors";
+                if(pdfContainer) pdfContainer.className = "border-2 border-dashed border-slate-200 rounded-xl p-4 text-center bg-slate-50 flex flex-col items-center justify-center transition-colors";
+                if(pdfFileCard) pdfFileCard.className = "flex items-center justify-between bg-white p-3 rounded-xl border border-slate-200 shadow-sm transition-colors";
+                linkCards.forEach(l => l.className = "link-card group bg-slate-50 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 p-4 rounded-xl flex items-center space-x-3 transition-all duration-200 shadow-2xs");
+                announcementItems.forEach(a => a.className = "announcement-item bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-1 transition-colors");
+                galleryItems.forEach(g => g.className = "gallery-item group relative rounded-xl overflow-hidden shadow-sm bg-slate-100 border border-slate-200 aspect-video flex items-center justify-center transition-colors");
+                
+                if(modalContent) modalContent.className = "bg-white text-slate-800 rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4 transition-colors";
+                if(announcementModalContent) announcementModalContent.className = "bg-white text-slate-800 rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4 transition-colors";
+                if(deleteContent) deleteContent.className = "bg-white text-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-xl text-center space-y-4 transition-colors";
+                uiInputs.forEach(i => i.className = "ui-input w-full bg-slate-50 border border-slate-200 rounded-xl p-2 text-slate-700 focus:outline-indigo-600 transition-colors");
+                calcNumBtns.forEach(btn => btn.className = "calc-num-btn bg-slate-50 hover:bg-slate-100 text-slate-800 font-bold py-2.5 rounded-xl transition-colors cursor-pointer border border-slate-100");
+                calcOpBtns.forEach(btn => btn.className = "calc-op-btn bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl transition-colors cursor-pointer");
+            }
+            renderCalendar();
+        }
+
+        // --- 2. Multi-language Support ---
+        function toggleLanguage() {
+            currentLang = currentLang === 'th' ? 'en' : 'th';
+            const langLabel = document.getElementById('lang-label');
+            const themeLabel = document.getElementById('theme-label');
+            
+            if(langLabel) langLabel.innerText = currentLang === 'th' ? 'EN' : 'TH';
+            if(themeLabel) themeLabel.innerText = currentLang === 'th' ? (isDarkMode ? 'สว่าง' : 'มืด') : (isDarkMode ? 'Light' : 'Dark');
+            
+            updateTexts();
+            renderCalendar();
+        }
+
+        function updateTexts() {
+            const t = translations[currentLang];
+            if(!t) return;
+            
+            const mainHeading = document.getElementById('main-heading');
+            const subHeading = document.getElementById('sub-heading');
+            const calTitle = document.getElementById('cal-title');
+            const pdfSectionTitle = document.getElementById('pdf-section-title');
+            const pdfSectionDesc = document.getElementById('pdf-section-desc');
+            const pdfEmptyText = document.getElementById('pdf-empty-text');
+            const pdfEmptySub = document.getElementById('pdf-empty-sub');
+            const linksSectionTitle = document.getElementById('links-section-title');
+            const announcementTitle = document.getElementById('announcement-title');
+            const gallerySectionTitle = document.getElementById('gallery-section-title');
+            const gallerySectionDesc = document.getElementById('gallery-section-desc');
+            const footerText = document.getElementById('footer-text');
+
+            if(mainHeading) mainHeading.innerText = t.mainHeading;
+            if(subHeading) subHeading.innerText = t.subHeading;
+            if(calTitle) calTitle.innerHTML = `<i class="fa-solid fa-calendar-alt text-indigo-600"></i> ${t.calTitle}`;
+            if(pdfSectionTitle) pdfSectionTitle.innerHTML = `<i class="fa-solid fa-file-pdf text-red-500"></i> ${t.pdfSectionTitle}`;
+            if(pdfSectionDesc) pdfSectionDesc.innerText = t.pdfSectionDesc;
+            if(pdfEmptyText) pdfEmptyText.innerText = t.pdfEmptyText;
+            if(pdfEmptySub) pdfEmptySub.innerText = t.pdfEmptySub;
+            if(linksSectionTitle) linksSectionTitle.innerHTML = `<i class="fa-solid fa-link text-indigo-600"></i> ${t.linksSectionTitle}`;
+            if(announcementTitle) announcementTitle.innerHTML = `<i class="fa-solid fa-bullhorn text-amber-500"></i> ${t.announcementTitle}`;
+            if(gallerySectionTitle) gallerySectionTitle.innerHTML = `<i class="fa-solid fa-images text-indigo-600"></i> ${t.gallerySectionTitle}`;
+            if(gallerySectionDesc) gallerySectionDesc.innerText = t.gallerySectionDesc;
+            if(footerText) footerText.innerHTML = t.footerText;
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) el.innerText = t[key];
+            });
+        }
+
+        // --- 3. Calculator Logic ---
+        function calcPress(val) {
+            if (calcDisplay === "0" && val !== '.') {
+                calcDisplay = val;
+            } else {
+                calcDisplay += val;
+            }
+            updateCalcScreen();
+        }
+
+        function calcClear() {
+            calcDisplay = "0";
+            updateCalcScreen();
+        }
+
+        function calcCalculate() {
+            try {
+                let result = eval(calcDisplay.replace(/×/g, '*').replace(/÷/g, '/'));
+                calcDisplay = String(result);
+            } catch (error) {
+                calcDisplay = "Error";
+            }
+            updateCalcScreen();
+        }
+
+        function updateCalcScreen() {
+            const screen = document.getElementById('calc-screen');
+            if(screen) screen.innerText = calcDisplay;
+        }
+
+        // --- 4. Announcements Management ---
+        function openAnnouncementModal() {
+            const modal = document.getElementById('announcement-modal');
+            if(modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function closeAnnouncementModal() {
+            const modal = document.getElementById('announcement-modal');
+            if(modal) {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }
+            document.getElementById('new-ann-title').value = '';
+            document.getElementById('new-ann-desc').value = '';
+        }
+
+        function saveNewAnnouncement() {
+            const typeSelect = document.getElementById('new-ann-type');
+            const titleInput = document.getElementById('new-ann-title');
+            const descInput = document.getElementById('new-ann-desc');
+            const listContainer = document.getElementById('announcement-list');
+
+            if(!titleInput || !descInput || !listContainer) return;
+
+            const type = typeSelect.value;
+            const title = titleInput.value.trim();
+            const desc = descInput.value.trim();
+
+            if(!title || !desc) {
+                alert(currentLang === 'th' ? 'กรุณากรอกหัวข้อและรายละเอียดให้ครบถ้วน' : 'Please fill in both title and description');
+                return;
+            }
+
+            const badgeText = type === 'company' ? (currentLang === 'th' ? 'ประกาศบริษัท' : 'Company') : (currentLang === 'th' ? 'ประกาศในไลน์' : 'Line Notice');
+            const badgeClass = type === 'company' ? 'bg-red-100 text-red-700' : 'bg-indigo-100 text-indigo-700';
+            const dateStr = new Date().toLocaleDateString(currentLang === 'th' ? 'th-TH' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+
+            const newAnnHTML = `
+                <div class="announcement-item ${isDarkMode ? 'bg-slate-800/60 border-slate-700' : 'bg-slate-50 border-slate-200'} border rounded-xl p-3.5 space-y-1 transition-colors">
+                    <div class="flex justify-between items-start">
+                        <span class="${badgeClass} text-[10px] font-bold px-2 py-0.5 rounded-full">${badgeText}</span>
+                        <span class="text-[10px] text-slate-400">${dateStr}</span>
+                    </div>
+                    <h4 class="font-bold text-sm text-slate-800 dark:text-slate-100">${title}</h4>
+                    <p class="text-xs text-slate-600 dark:text-slate-300">${desc}</p>
+                </div>
+            `;
+
+            listContainer.insertAdjacentHTML('afterbegin', newAnnHTML);
+            closeAnnouncementModal();
+        }
+
+        // --- 5. Robust Calendar & Holiday Rendering ---
+        function renderCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const monthKey = `${year}-${month}`;
+
+            if (!officialHolidays2026[monthKey]) {
+                officialHolidays2026[monthKey] = {};
+            }
+
+            const monthNamesTh = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+            const monthNamesEn = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            
+            const monthName = currentLang === 'th' ? monthNamesTh[month] : monthNamesEn[month];
+            const monthYearEl = document.getElementById('calendar-month-year');
+            if(monthYearEl) {
+                monthYearEl.innerText = `${monthName} ${year + (currentLang === 'th' ? 543 : 0)}`;
+            }
+
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const totalDays = new Date(year, month + 1, 0).getDate();
+
+            const daysContainer = document.getElementById('calendar-days');
+            if(!daysContainer) return;
+            daysContainer.innerHTML = '';
+
+            for (let i = 0; i < firstDayIndex; i++) {
+                const emptyDiv = document.createElement('div');
+                daysContainer.appendChild(emptyDiv);
+            }
+
+            const today = new Date();
+            let upcomingHTML = '';
+            let modalHolidayHTML = '';
+            const tLang = translations[currentLang];
+
+            for (let day = 1; day <= totalDays; day++) {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = "h-8 flex flex-col items-center justify-center rounded-lg text-sm font-medium relative transition-all cursor-pointer";
+                
+                const currentDayOfWeek = new Date(year, month, day).getDay();
+                const isWeeklyHoliday = (weeklyHolidaySetting === "0" && currentDayOfWeek === 0) || (weeklyHolidaySetting === "6" && (currentDayOfWeek === 0 || currentDayOfWeek === 6));
+                const holidayName = officialHolidays2026[monthKey][day];
+                const isToday = (day === today.getDate() && month === today.getMonth() && year === today.getFullYear());
+
+                if (isToday) {
+                    dayDiv.className += " bg-indigo-600 text-white font-bold shadow-xs";
+                } else if (isWeeklyHoliday || holidayName) {
+                    dayDiv.className += isDarkMode ? " bg-red-950/50 text-red-400 font-bold border border-red-900/50" : " bg-red-50 text-red-600 font-bold border border-red-200";
+                    const displayTitle = holidayName || (currentDayOfWeek === 0 ? tLang.sundayName : tLang.weeklyHolidayName);
+                    if (day >= today.getDate() || month > today.getMonth() || year > today.getFullYear()) {
+                        upcomingHTML += `<li>• ${currentLang === 'th' ? `วันที่ ${day}${monthName}` : `${monthName}${day}`}: ${displayTitle}</li>`;
+                    }
+                } else {
+                    dayDiv.className += isDarkMode ? " hover:bg-slate-800 text-slate-300" : " hover:bg-slate-100 text-slate-700";
+                }
+
+                dayDiv.innerHTML = `<span>${day}</span>`;
+                daysContainer.appendChild(dayDiv);
+            }
+
+            const upcomingListEl = document.getElementById('upcoming-holiday-list');
+            if(upcomingListEl) {
+                upcomingListEl.innerHTML = upcomingHTML || `<li class="text-slate-400">${currentLang === 'th' ? 'ไม่มีวันหยุดอื่นๆ ในช่วงนี้' : 'No upcoming holidays'}</li>`;
+            }
+
+            for (let d in officialHolidays2026[monthKey]) {
+                modalHolidayHTML += `<div class="flex justify-between items-center ${isDarkMode ? 'bg-slate-900 border-slate-800 text-slate-300' : 'bg-white border-slate-100 text-slate-700'} px-2 py-1 rounded border"><span>${currentLang === 'th' ? `วันที่ ${d}` : `${d}`}: ${officialHolidays2026[monthKey][d]}</span><button onclick="removeHoliday(${year}, ${month}, ${d})" class="text-red-500 hover:text-red-700 font-bold px-1 cursor-pointer">×</button></div>`;
+            }
+            
+            const modalListEl = document.getElementById('modal-holiday-list');
+            if(modalListEl) {
+                modalListEl.innerHTML = modalHolidayHTML || `<span class="text-slate-400">${currentLang === 'th' ? 'ยังไม่มีวันหยุดพิเศษในเดือนนี้' : 'No special holidays'}</span>`;
+            }
+        }
+
+        function changeMonth(direction) {
+            currentDate.setMonth(currentDate.getMonth() + direction);
+            renderCalendar();
+        }
+
+        function updateWeeklyHoliday(selectElement) {
+            weeklyHolidaySetting = selectElement.value;
+            renderCalendar();
+        }
+
+        function openHolidaySettings() {
+            const modal = document.getElementById('holiday-modal');
+            if(modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function closeHolidaySettings() {
+            const modal = document.getElementById('holiday-modal');
+            if(modal) {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }
+            renderCalendar();
+        }
+
+        function addCustomHoliday() {
+            const dayInput = document.getElementById('new-holiday-day');
+            const nameInput = document.getElementById('new-holiday-name');
+            if(!dayInput || !nameInput) return;
+
+            const day = parseInt(dayInput.value);
+            const name = nameInput.value.trim();
+
+            if (!day || !name) {
+                alert(currentLang === 'th' ? 'กรุณากรอกวันที่และชื่อวันหยุดให้ครบถ้วน' : 'Please fill in both date and holiday name');
+                return;
+            }
+
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const monthKey = `${year}-${month}`;
+
+            if (!officialHolidays2026[monthKey]) {
+                officialHolidays2026[monthKey] = {};
+            }
+
+            officialHolidays2026[monthKey][day] = name;
+            dayInput.value = '';
+            nameInput.value = '';
+            renderCalendar();
+            alert(currentLang === 'th' ? 'เพิ่มวันหยุดเรียบร้อยแล้ว' : 'Holiday added successfully');
+        }
+
+        function removeHoliday(year, month, day) {
+            const monthKey = `${year}-${month}`;
+            if (officialHolidays2026[monthKey] && officialHolidays2026[monthKey][day]) {
+                delete officialHolidays2026[monthKey][day];
+                renderCalendar();
+            }
+        }
+
+        // --- 6. PDF & Photo Upload / Lightbox & Zoom ---
+        function handlePdfUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (file.type !== 'application/pdf') {
+                    alert(currentLang === 'th' ? 'กรุณาอัปโหลดเฉพาะไฟล์นามสกุล .pdf เท่านั้น' : 'Please upload only .pdf files');
+                    return;
+                }
+                currentPdfUrl = URL.createObjectURL(file);
+                currentPdfName = file.name;
+
+                const fileNameEl = document.getElementById('file-name');
+                const uploadTimeEl = document.getElementById('upload-time');
+                const pdfViewer = document.getElementById('pdf-viewer');
+                
+                if(fileNameEl) fileNameEl.innerText = file.name;
+                if(uploadTimeEl) uploadTimeEl.innerText = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.';
+                if(pdfViewer) pdfViewer.src = currentPdfUrl;
+
+                const noFileState = document.getElementById('no-file-state');
+                const fileUploadedState = document.getElementById('file-uploaded-state');
+                if(noFileState) noFileState.classList.add('hidden');
+                if(fileUploadedState) fileUploadedState.classList.remove('hidden');
+            }
+        }
+
+        function removePdf() {
+            const pdfUpload = document.getElementById('pdf-upload');
+            const pdfViewer = document.getElementById('pdf-viewer');
+            const fileUploadedState = document.getElementById('file-uploaded-state');
+            const noFileState = document.getElementById('no-file-state');
+
+            if(pdfUpload) pdfUpload.value = '';
+            if(pdfViewer) pdfViewer.src = '';
+            currentPdfUrl = "";
+            currentPdfName = "";
+            if(fileUploadedState) fileUploadedState.classList.add('hidden');
+            if(noFileState) noFileState.classList.remove('hidden');
+        }
+
+        function openPdfZoom() {
+            if (!currentPdfUrl) return;
+            const container = document.getElementById('lightbox-content-container');
+            const caption = document.getElementById('lightbox-caption');
+            const modal = document.getElementById('lightbox-modal');
+
+            if(container) {
+                container.innerHTML = `<embed src="${currentPdfUrl}" type="application/pdf" width="100%" height="100%" class="rounded-xl" />`;
+            }
+            if(caption) {
+                caption.innerText = `แผนการผลิต: ${currentPdfName}`;
+            }
+            if(modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (!file.type.startsWith('image/')) {
+                    alert(currentLang === 'th' ? 'กรุณาอัปโหลดไฟล์รูปภาพเท่านั้น' : 'Please upload image files only');
+                    return;
+                }
+
+                const caption = prompt(currentLang === 'th' ? 'ระบุหัวข้อหรือกิจกรรมของรูปภาพนี้:' : 'Enter photo title or activity:', currentLang === 'th' ? 'กิจกรรมในไลน์ผลิต' : 'Production activity');
+                if (caption === null) return;
+
+                const imageURL = URL.createObjectURL(file);
+                const galleryGrid = document.getElementById('gallery-grid');
+                if(!galleryGrid) return;
+
+                const currentDateStr = new Date().toLocaleDateString(currentLang === 'th' ? 'th-TH' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+
+                const newPhotoHTML = `
+                    <div class="gallery-item group relative rounded-xl overflow-hidden shadow-sm ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-slate-100 border-slate-200'} border aspect-video flex items-center justify-center transition-colors">
+                        <img src="${imageURL}" alt="${caption}" onclick="openLightbox(this.src, this.dataset.caption)" data-caption="${caption}" class="w-full h-full object-cover cursor-pointer group-hover:scale-105 transition-transform duration-300">
+                        
+                        <div class="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                            <button onclick="editPhotoCaption(this)" class="bg-black/60 hover:bg-indigo-600 text-white w-7 h-7 rounded-lg flex items-center justify-center text-sm transition-colors cursor-pointer" title="เปลี่ยนชื่อภาพ">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button onclick="confirmDeletePhoto(this)" class="bg-black/60 hover:bg-red-600 text-white w-7 h-7 rounded-lg flex items-center justify-center text-sm transition-colors cursor-pointer" title="ลบภาพ">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+
+                        <div onclick="openLightbox(this.previousElementSibling.previousElementSibling.src, this.querySelector('.caption-text').innerText)" class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-3 text-white cursor-pointer">
+                            <p class="text-sm font-bold caption-text">${caption}</p>
+                            <p class="text-xs text-slate-300">${currentDateStr}</p>
+                        </div>
+                    </div>
+                `;
+                galleryGrid.insertAdjacentHTML('afterbegin', newPhotoHTML);
+            }
+        }
+
+        function openLightbox(imgSrc, captionText) {
+            const container = document.getElementById('lightbox-content-container');
+            const lightboxCaption = document.getElementById('lightbox-caption');
+            const modal = document.getElementById('lightbox-modal');
+
+            if(container) {
+                container.innerHTML = `<img src="${imgSrc}" alt="Zoomed Photo" class="max-h-[75vh] w-auto object-contain rounded-xl">`;
+            }
+            if(lightboxCaption) lightboxCaption.innerText = captionText;
+            if(modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function closeLightbox() {
+            const modal = document.getElementById('lightbox-modal');
+            if(modal) {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+            }
+        }
+
+        function editPhotoCaption(buttonElement) {
+            if(event) event.stopPropagation();
+            const card = buttonElement.closest('.group');
+            if(!card) return;
+
+            const captionEl = card.querySelector('.caption-text');
+            const imgEl = card.querySelector('img');
+
+            const currentCaption = captionEl ? captionEl.innerText : '';
+            const newCaption = prompt(currentLang === 'th' ? 'แก้ไขชื่อหรือหัวข้อรูปภาพ:' : 'Edit photo title:', currentCaption);
+
+            if (newCaption !== null && newCaption.trim() !== '') {
+                if(captionEl) captionEl.innerText = newCaption.trim();
+                if(imgEl) imgEl.setAttribute('data-caption', newCaption.trim());
+            }
+        }
+
+        let targetCardToDelete = null;
+
+        function confirmDeletePhoto(buttonElement) {
+            if(event) event.stopPropagation();
+            targetCardToDelete = buttonElement.closest('.group');
+            const deleteModal = document.getElementById('delete-modal');
+            if(deleteModal) {
+                deleteModal.classList.remove('hidden');
+                deleteModal.classList.add('flex');
+            }
+        }
+
+        function closeDeleteModal() {
+            const deleteModal = document.getElementById('delete-modal');
+            if(deleteModal) {
+                deleteModal.classList.remove('flex');
+                deleteModal.classList.add('hidden');
+            }
+            targetCardToDelete = null;
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const confirmDelBtn = document.getElementById('confirm-delete-btn');
+            if(confirmDelBtn) {
+                confirmDelBtn.addEventListener('click', function() {
+                    if (targetCardToDelete) {
+                        targetCardToDelete.remove();
+                        closeDeleteModal();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

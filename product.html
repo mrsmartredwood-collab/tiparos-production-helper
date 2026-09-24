@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="th" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ส่วนงานหัวหน้าไลน์ผลิตน้ำปลา ทิพรส - ระบบช่วยดำเนินงาน หัวยิงฉลาก และระบบจดจำลูกค้า</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SheetJS for Excel Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+        * {
+            font-family: 'Sarabun', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.2);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-full transition-colors duration-200 flex flex-col justify-between">
+
+    <div>
+        <!-- Modal สอบถามเคลียร์ข้อมูลเมื่อเปิดหน้าเว็บ -->
+        <div id="clearDataModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-200">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 text-center transform scale-95 transition-transform duration-200" id="modalBox">
+                <div class="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 mx-auto flex items-center justify-center text-xl mb-3">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <h3 class="text-base font-bold text-slate-800 dark:text-white mb-1" id="restoreTitle">กู้คืนหรือเริ่มใหม่?</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mb-6" id="restoreDesc">คุณต้องการล้างข้อมูลที่เคยกรอกไว้ทั้งหมดเพื่อเริ่มใหม่ หรือต้องการเก็บข้อมูลเดิมไว้?</p>
+                <div class="grid grid-cols-2 gap-2.5">
+                    <button onclick="handleClearModal(true)" class="w-full py-2.5 px-3 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-xl text-xs transition-colors shadow-sm flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-trash-can"></i> <span id="btnModalClear">เคลียร์ข้อมูลทั้งหมด</span>
+                    </button>
+                    <button onclick="handleClearModal(false)" class="w-full py-2.5 px-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold rounded-xl text-xs transition-colors flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-floppy-disk"></i> <span id="btnModalKeep">เก็บข้อมูลเดิมไว้</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom Confirm/Delete Modal -->
+        <div id="confirmModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-200">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 text-center transform scale-95 transition-transform duration-200">
+                <div id="confirmIconContainer" class="w-12 h-12 rounded-full bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 mx-auto flex items-center justify-center text-xl mb-3">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <h3 id="confirmTitle" class="text-base font-bold text-slate-800 dark:text-white mb-1">ยืนยันการลบ?</h3>
+                <p id="confirmMessage" class="text-xs text-slate-500 dark:text-slate-400 mb-6">คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้?</p>
+                <div class="grid grid-cols-2 gap-2.5">
+                    <button id="confirmYesBtn" class="w-full py-2.5 px-3 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-xl text-xs transition-colors shadow-sm flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-check"></i> <span id="confirmYesText">ยืนยันการลบ</span>
+                    </button>
+                    <button onclick="closeConfirmModal()" class="w-full py-2.5 px-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold rounded-xl text-xs transition-colors flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-xmark"></i> <span id="confirmNoText">ยกเลิก</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navbar Header -->
+        <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 shadow-sm">
+            <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-brand-600 text-white p-2 rounded-xl shadow-md">
+                        <i class="fa-solid fa-tags text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 id="appTitleHeader" class="text-sm md:text-base font-bold leading-tight text-slate-800 dark:text-white">ส่วนงานหัวหน้าไลน์ผลิตน้ำปลา ทิพรส</h1>
+                        <p id="appSubHeader" class="text-xs text-brand-600 dark:text-brand-400 font-medium">ระบบช่วยดำเนินงาน หัวยิงฉลาก และระบบจดจำลูกค้า</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <!-- Language Toggle Button -->
+                    <button onclick="toggleLanguage()" class="px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors flex items-center gap-1" title="สลับภาษา / Switch Language">
+                        <i class="fa-solid fa-globe text-brand-600 dark:text-brand-400"></i>
+                        <span id="langLabel">TH | EN</span>
+                    </button>
+                    
+                    <button id="themeToggleBtn" onclick="toggleTheme()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" title="สลับ Dark/Light Mode">
+                        <i id="themeIcon" class="fa-solid fa-moon"></i>
+                    </button>
+                    <button onclick="confirmResetForm()" class="p-2.5 rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-900/30 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/50 transition-colors" title="ล้างข้อมูลทั้งหมด">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-4xl mx-auto p-4 space-y-6">
+
+            <!-- 0. ลูกค้า & รูปแบบประจำร้าน (Customer Presets) -->
+            <section class="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-700">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-user-gear text-brand-600 dark:text-brand-400"></i>
+                        <span id="secPresetTitle">รูปแบบประจำร้าน / ลูกค้า (Customer Presets)</span>
+                    </h2>
+                    <span id="secPresetSub" class="text-xs text-slate-400">คลิกเลือกร้านค้าเพื่อเลือกรายการสินค้า</span>
+                </div>
+                
+                <!-- List Container for Customers -->
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 mb-3" id="presetButtonsContainer">
+                    <!-- Customer Buttons Injected Here -->
+                </div>
+
+                <!-- Active Customer Sub-Product Management Bar -->
+                <div id="presetManagementBar" class="hidden mb-3 p-3 bg-slate-50 dark:bg-slate-900/80 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-wrap items-center justify-between gap-3 text-xs">
+                    <div class="flex items-center gap-2">
+                        <span id="lblActiveCustomer" class="font-bold text-slate-600 dark:text-slate-300">ลูกค้ารายนี้:</span>
+                        <span id="activePresetName" class="font-bold text-brand-600 dark:text-brand-400 text-sm"></span>
+                    </div>
+
+                    <!-- Dropdown for Sub-Products -->
+                    <div class="flex items-center gap-2 flex-grow max-w-xs">
+                        <label id="lblSelectSize" for="customerProductDropdown" class="font-semibold text-slate-600 dark:text-slate-300 whitespace-nowrap">เลือกขนาดสินค้า:</label>
+                        <select id="customerProductDropdown" onchange="handleCustomerProductSelect()" class="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg px-2.5 py-1.5 font-semibold text-brand-700 dark:text-brand-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        </select>
+                    </div>
+
+                    <!-- Customer Action Tools -->
+                    <div class="flex items-center gap-2">
+                        <button onclick="addCustomProductToActivePreset()" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors flex items-center gap-1" title="เพิ่มขนาดสินค้าใหม่">
+                            <i class="fa-solid fa-plus"></i> <span id="btnAddProduct">เพิ่มสินค้า</span>
+                        </button>
+                        <button onclick="editSelectedPreset()" class="px-2.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-medium transition-colors flex items-center gap-1">
+                            <i class="fa-solid fa-pen-to-square"></i> <span id="btnEditStore">แก้ไขร้าน</span>
+                        </button>
+                        <button onclick="confirmDeleteSelectedPreset()" class="px-2.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-medium transition-colors flex items-center gap-1">
+                            <i class="fa-solid fa-trash-can"></i> <span id="btnDeleteStore">ลบร้าน</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Save New Preset Button -->
+                <div class="pt-3 border-t border-slate-100 dark:border-slate-700/60 flex flex-wrap items-center justify-between gap-2 text-xs">
+                    <span id="lblSaveNewPresetHelp" class="text-slate-500 dark:text-slate-400">ต้องการเพิ่มลูกค้ารายใหม่ลงระบบ?</span>
+                    <button onclick="saveCurrentAsPreset()" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-50 hover:bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:hover:bg-brand-900/50 dark:text-brand-300 rounded-lg font-semibold transition-colors">
+                        <i class="fa-solid fa-bookmark text-brand-600 dark:text-brand-400"></i>
+                        <span id="btnSaveNewPreset">+ บันทึกเป็นรูปแบบลูกค้ารายใหม่</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- 1. ข้อมูลงานผลิต (Production Information) -->
+            <section class="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-700">
+                <h2 class="text-sm font-bold text-slate-700 dark:text-slate-200 border-b border-slate-100 dark:border-slate-700 pb-2 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-clipboard-list text-brand-600 dark:text-brand-400"></i>
+                    <span id="secProdInfoTitle">ข้อมูลงานผลิต</span>
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- สินค้า / ขนาด -->
+                    <div class="space-y-1">
+                        <label id="lblProductSelect" for="productSelect" class="block text-xs font-semibold text-slate-600 dark:text-slate-300">
+                            สินค้า / ขนาด
+                        </label>
+                        <select id="productSelect" onchange="handleProductChange()" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none transition-all">
+                            <option value="" disabled selected>-- เลือกสินค้า / ขนาด --</option>
+                            <option value="เพท 300ml." data-multiplier="24">เพท 300ml.</option>
+                            <option value="เพท 500ml." data-multiplier="12">เพท 500ml.</option>
+                            <option value="เพท 700ml." data-multiplier="12">เพท 700ml.</option>
+                            <option value="เพท 1500ml." data-multiplier="6">เพท 1500ml.</option>
+                            <option value="แกลลอน 4500ml." data-multiplier="4">แกลลอน 4500ml.</option>
+                            <option value="โขง 700ml." data-multiplier="12">โขง 700ml.</option>
+                            <option value="โขง 720ml." data-multiplier="12">โขง 720ml.</option>
+                            <option value="เพทแบน 700ml." data-multiplier="12">เพทแบน 700ml.</option>
+                            <option value="CUSTOM" data-multiplier="12">+ กำหนดเอง...</option>
+                        </select>
+                        <input type="text" id="productCustom" class="hidden w-full mt-2 bg-sky-50/50 dark:bg-slate-900 border border-brand-500 rounded-xl px-3 py-2 text-sm focus:outline-none placeholder-slate-400" placeholder="ระบุสินค้า/ขนาด เช่น เพท 200ml.">
+                    </div>
+
+                    <!-- ชื่อร้าน -->
+                    <div class="space-y-1">
+                        <label id="lblStoreName" for="storeName" class="block text-xs font-semibold text-slate-600 dark:text-slate-300">ชื่อร้าน / ลูกค้า</label>
+                        <input type="text" id="storeName" value="" placeholder="เช่น โกลบอล" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none transition-all">
+                    </div>
+
+                    <!-- ยอดสั่งผลิต -->
+                    <div class="space-y-1">
+                        <label id="lblTargetQty" for="targetQty" class="block text-xs font-semibold text-slate-600 dark:text-slate-300">ยอดสั่งผลิต (ลัง/กล่อง)</label>
+                        <input type="text" id="targetQty" value="" placeholder="เช่น 1500 หรือ 1500 กล่อง" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none transition-all">
+                    </div>
+
+                    <input type="hidden" id="itemsPerBox" value="12">
+
+                    <!-- ยอดเดินเครื่อง -->
+                    <div class="space-y-1 md:col-span-1">
+                        <label id="lblTimeCount" for="timeCount" class="block text-xs font-semibold text-slate-600 dark:text-slate-300">
+                            ยอดเดินเครื่อง (ขวด)
+                        </label>
+                        <div class="relative">
+                            <input type="number" id="timeCount" value="" placeholder="0" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none font-semibold text-slate-800 dark:text-slate-100">
+                            <span id="unitBottles1" class="absolute right-3 top-2.5 text-xs text-slate-400">ขวด</span>
+                        </div>
+                    </div>
+
+                    <!-- ส่วนปิดน้ำปลา (Checkbox + Input) -->
+                    <div class="space-y-2 md:col-span-2 pt-2 border-t border-slate-100 dark:border-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer select-none">
+                            <input type="checkbox" id="hasDeduct" onchange="toggleDeductSection()" class="w-4 h-4 text-brand-600 rounded border-slate-300 focus:ring-brand-500">
+                            <span id="lblHasDeduct" class="text-xs font-bold text-slate-700 dark:text-slate-200">มีปิดน้ำปลา (หักยอดออก)</span>
+                        </label>
+
+                        <div id="deductInputWrapper" class="hidden space-y-1 mt-2">
+                            <label id="lblDeductCount" for="deductCount" class="block text-xs font-semibold text-slate-600 dark:text-slate-300">จำนวนที่ปิดน้ำปลา (ขวด)</label>
+                            <div class="relative">
+                                <input type="number" id="deductCount" value="" placeholder="0" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none font-semibold text-rose-600 dark:text-rose-400">
+                                <span id="unitBottles2" class="absolute right-3 top-2.5 text-xs text-slate-400">ขวด</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. ตั้งค่าวันที่ฉลาก (Date Configuration) -->
+            <section class="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-700">
+                <h2 class="text-sm font-bold text-slate-700 dark:text-slate-200 border-b border-slate-100 dark:border-slate-700 pb-2 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-gear text-brand-600 dark:text-brand-400"></i>
+                    <span id="secDateConfigTitle">ตั้งค่าวันที่และรูปแบบฉลาก</span>
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- 1. วันที่ผลิต -->
+                    <div class="space-y-1">
+                        <label id="lblMfgDate" for="mfgDate" class="block text-xs font-semibold text-slate-600 dark:text-slate-300">1. วันที่ผลิต (MFG Date)</label>
+                        <input type="date" id="mfgDate" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none transition-all">
+                    </div>
+
+                    <!-- 2. คำนำหน้า MFG -->
+                    <div class="space-y-1">
+                        <label id="lblMfgPrefix" for="mfgPrefixSelect" class="block text-xs font-semibold text-slate-600 dark:text-slate-300">2. คำนำหน้า วันผลิต</label>
+                        <select id="mfgPrefixSelect" onchange="toggleCustomPrefix('mfgPrefixSelect', 'mfgPrefixCustom')" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            <option value="MFG">MFG</option>
+                            <option value="MFD">MFD</option>
+                            <option value="PROD">PROD</option>
+                            <option value="CUSTOM">+ กำหนดเอง...</option>
+                        </select>
+                        <input type="text" id="mfgPrefixCustom" class="hidden w-full mt-2 bg-sky-50/50 dark:bg-slate-900 border border-brand-500 rounded-xl px-3 py-2 text-sm focus:outline-none placeholder-slate-400" placeholder="เช่น MFG">
+                    </div>
+
+                    <!-- 3. คำนำหน้า BBF -->
+                    <div class="space-y-1">
+                        <label id="lblBbfPrefix" for="bbfPrefixSelect" class="block text-xs font-semibold text-slate-600 dark:text-slate-300">3. คำนำหน้า วันหมดอายุ</label>
+                        <select id="bbfPrefixSelect" onchange="toggleCustomPrefix('bbfPrefixSelect', 'bbfPrefixCustom')" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            <option value="BBF">BBF</option>
+                            <option value="BFF">BFF</option>
+                            <option value="EXP">EXP</option>
+                            <option value="CUSTOM">+ กำหนดเอง...</option>
+                        </select>
+                        <input type="text" id="bbfPrefixCustom" class="hidden w-full mt-2 bg-sky-50/50 dark:bg-slate-900 border border-brand-500 rounded-xl px-3 py-2 text-sm focus:outline-none placeholder-slate-400" placeholder="เช่น BBF">
+                    </div>
+
+                    <!-- 4. อายุการเก็บรักษา -->
+                    <div class="space-y-1">
+                        <label id="lblShelfLife" for="shelfValue" class="block text-xs font-semibold text-slate-600 dark:text-slate-300">4. อายุการเก็บรักษา</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="number" id="shelfValue" value="2" min="1" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            <select id="shelfUnit" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                                <option value="years" selected>ปี (Years)</option>
+                                <option value="months">เดือน (Months)</option>
+                                <option value="days">วัน (Days)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 5. รูปแบบวัน/เดือน/ปี -->
+                    <div class="space-y-1 md:col-span-2">
+                        <label id="lblDateFormat" for="dateFormat" class="block text-xs font-semibold text-slate-600 dark:text-slate-300">5. รูปแบบวันที่แสดงผล (คริสต์ศักราช)</label>
+                        <select id="dateFormat" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none font-mono">
+                            <optgroup label="--- 1. วัน / เดือน / ปี ---">
+                                <option value="DD/MM/YY" selected>DD/MM/YY (เช่น 23/09/26)</option>
+                                <option value="DD/MM/YYYY">DD/MM/YYYY (เช่น 23/09/2026)</option>
+                            </optgroup>
+                            <optgroup label="--- 2. เดือน / วัน / ปี ---">
+                                <option value="MM/DD/YY">MM/DD/YY (เช่น 09/23/26)</option>
+                                <option value="MM/DD/YYYY">MM/DD/YYYY (เช่น 09/23/2026)</option>
+                            </optgroup>
+                            <optgroup label="--- 3. ปี / เดือน / วัน ---">
+                                <option value="YY/MM/DD">YY/MM/DD (เช่น 26/09/23)</option>
+                                <option value="YYYY/MM/DD">YYYY/MM/DD (such as 2026/09/23)</option>
+                            </optgroup>
+                            <optgroup label="--- 4. ปี / วัน / เดือน ---">
+                                <option value="YY/DD/MM">YY/DD/MM (เช่น 26/23/09)</option>
+                                <option value="YYYY/DD/MM">YYYY/DD/MM (เช่น 2026/23/09)</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. OUTPUT สรุปผลลัพธ์ -->
+            <section class="bg-gradient-to-br from-sky-50 to-blue-50 dark:from-slate-800 dark:to-slate-800/80 rounded-2xl p-5 shadow-sm border-2 border-dashed border-brand-500/40 relative">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-brand-600 text-white text-xs font-bold">✓</span>
+                        <h2 id="secOutputTitle" class="text-sm font-bold text-brand-800 dark:text-brand-300">OUTPUT ผลลัพธ์สำหรับนำไปใช้งาน</h2>
+                    </div>
+                    
+                    <button id="lockBtn" onclick="toggleLockTextarea()" class="text-xs px-2.5 py-1 rounded-lg bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600 hover:bg-slate-50 transition-colors flex items-center gap-1.5">
+                        <i id="lockIcon" class="fa-solid fa-lock-open text-amber-500"></i>
+                        <span id="lockText">แก้ไขได้</span>
+                    </button>
+                </div>
+
+                <!-- Textarea Output -->
+                <div class="relative">
+                    <textarea id="showOutput" rows="4" class="w-full p-4 rounded-xl bg-white/90 dark:bg-slate-900/90 text-slate-900 dark:text-slate-100 font-mono font-bold text-lg leading-relaxed border border-brand-200 dark:border-slate-700 focus:ring-2 focus:ring-brand-500 focus:outline-none transition-all shadow-inner resize-y" placeholder="ผลลัพธ์จะแสดงที่นี่..."></textarea>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-2 mt-4">
+                    <button onclick="userSaveToHistoryLog()" class="col-span-2 md:col-span-1 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-3 rounded-xl shadow-md transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-sm">
+                        <i class="fa-solid fa-floppy-disk text-base"></i>
+                        <span id="btnSaveHistory">บันทึกประวัติ</span>
+                    </button>
+
+                    <button onclick="copyResult()" class="col-span-1 md:col-span-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-3 rounded-xl shadow-md transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-sm">
+                        <i class="fa-solid fa-copy"></i>
+                        <span id="btnCopy">คัดลอก</span>
+                    </button>
+
+                    <button onclick="shareToLine()" class="col-span-1 md:col-span-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-3 rounded-xl shadow-md transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-sm">
+                        <i class="fa-brands fa-line text-base"></i>
+                        <span id="btnShareLine">แชร์ LINE</span>
+                    </button>
+
+                    <button onclick="exportToExcel()" class="col-span-1 md:col-span-1 bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 px-3 rounded-xl shadow-md transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-sm">
+                        <i class="fa-solid fa-file-excel"></i>
+                        <span id="btnExcel">Excel</span>
+                    </button>
+
+                    <button onclick="printWorkOrder()" class="col-span-1 md:col-span-1 bg-slate-700 hover:bg-slate-800 text-white font-bold py-3 px-3 rounded-xl shadow-md transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-sm">
+                        <i class="fa-solid fa-print"></i>
+                        <span id="btnPrint">พิมพ์/PDF</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- 4. ประวัติบันทึกการทำงาน (History Log) -->
+            <section class="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-700">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-history text-brand-600 dark:text-brand-400"></i>
+                        <span id="secHistoryTitle">ประวัติรายการคำนวณล่าสุด</span>
+                    </h2>
+                    <button onclick="confirmClearHistoryStep1()" class="text-xs text-rose-500 hover:text-rose-700 font-medium transition-colors">
+                        <i class="fa-solid fa-trash-can mr-1"></i> <span id="btnClearHistory">ล้างประวัติ</span>
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 font-semibold uppercase border-b border-slate-200 dark:border-slate-700">
+                            <tr>
+                                <th id="thTime" class="py-2.5 px-3">เวลา</th>
+                                <th id="thProd" class="py-2.5 px-3">สินค้า</th>
+                                <th id="thStore" class="py-2.5 px-3">ร้านค้า</th>
+                                <th id="thMfg" class="py-2.5 px-3">วันผลิต (MFG)</th>
+                                <th id="thBbf" class="py-2.5 px-3">วันหมดอายุ (BBF)</th>
+                                <th id="thRun" class="py-2.5 px-3">เดินเครื่อง (ขวดเต็ม)</th>
+                                <th id="thManage" class="py-2.5 px-3 text-center">จัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody" class="divide-y divide-slate-100 dark:divide-slate-700/50">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Footer Credit (เครดิตผู้ดูแลระบบ) -->
+    <footer id="footerCredit" class="py-4 text-center text-xs font-semibold text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-slate-800 mt-6">
+        ผู้ดูแล: นาย ชัยวุฒิ พลอยพริ้ง (หัวหน้าไลน์ผลิตน้ำปลา)
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 z-50 pointer-events-none">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <span id="toastMsg" class="text-sm font-medium">บันทึกเรียบร้อย!</span>
+    </div>
+
+    <script>
+        // Language Dictionary
+        let currentLang = localStorage.getItem('tiparos_lang') || 'TH';
+        
+        const translations = {
+            TH: {
+                appTitle: 'ส่วนงานหัวหน้าไลน์ผลิตน้ำปลา ทิพรส',
+                appSub: 'ระบบช่วยดำเนินงาน หัวยิงฉลาก และระบบจดจำลูกค้า',
+                restoreTitle: 'กู้คืนหรือเริ่มใหม่?',
+                restoreDesc: 'คุณต้องการล้างข้อมูลที่เคยกรอกไว้ทั้งหมดเพื่อเริ่มใหม่ หรือต้องการเก็บข้อมูลเดิมไว้?',
+                btnModalClear: 'เคลียร์ข้อมูลทั้งหมด',
+                btnModalKeep: 'เก็บข้อมูลเดิมไว้',
+                confirmDeleteTitle: 'ยืนยันการลบ?',
+                confirmDeleteMsg: 'คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้?',
+                confirmDeleteBtnText: 'ยืนยันการลบ',
+                cancelBtnText: 'ยกเลิก',
+                secPresetTitle: 'รูปแบบประจำร้าน / ลูกค้า (Customer Presets)',
+                secPresetSub: 'คลิกเลือกร้านค้าเพื่อเลือกรายการสินค้า',
+                lblActiveCustomer: 'ลูกค้ารายนี้:',
+                lblSelectSize: 'เลือกขนาดสินค้า:',
+                btnAddProduct: 'เพิ่มสินค้า',
+                btnEditStore: 'แก้ไขร้าน',
+                btnDeleteStore: 'ลบร้าน',
+                lblSaveNewPresetHelp: 'ต้องการเพิ่มลูกค้ารายใหม่ลงระบบ?',
+                btnSaveNewPreset: '+ บันทึกเป็นรูปแบบลูกค้ารายใหม่',
+                secProdInfoTitle: 'ข้อมูลงานผลิต',
+                lblProductSelect: 'สินค้า / ขนาด',
+                lblStoreName: 'ชื่อร้าน / ลูกค้า',
+                lblTargetQty: 'ยอดสั่งผลิต (ลัง/กล่อง)',
+                lblTimeCount: 'ยอดเดินเครื่อง (ขวด)',
+                lblHasDeduct: 'มีปิดน้ำปลา (หักยอดออก)',
+                lblDeductCount: 'จำนวนที่ปิดน้ำปลา (ขวด)',
+                unitBottles: 'ขวด',
+                secDateConfigTitle: 'ตั้งค่าวันที่และรูปแบบฉลาก',
+                lblMfgDate: '1. วันที่ผลิต (MFG Date)',
+                lblMfgPrefix: '2. คำนำหน้า วันผลิต',
+                lblBbfPrefix: '3. คำนำหน้า วันหมดอายุ',
+                lblShelfLife: '4. อายุการเก็บรักษา',
+                lblDateFormat: '5. รูปแบบวันที่แสดงผล (คริสต์ศักราช)',
+                secOutputTitle: 'OUTPUT ผลลัพธ์สำหรับนำไปใช้งาน',
+                lockTextOpen: 'แก้ไขได้',
+                lockTextLocked: 'ล็อคอยู่',
+                btnSaveHistory: 'บันทึกประวัติ',
+                btnCopy: 'คัดลอก',
+                btnShareLine: 'แชร์ LINE',
+                btnExcel: 'Excel',
+                btnPrint: 'พิมพ์/PDF',
+                secHistoryTitle: 'ประวัติรายการคำนวณล่าสุด',
+                btnClearHistory: 'ล้างประวัติ',
+                thTime: 'เวลา',
+                thProd: 'สินค้า',
+                thStore: 'ร้านค้า',
+                thMfg: 'วันผลิต (MFG)',
+                thBbf: 'วันหมดอายุ (BBF)',
+                thRun: 'เดินเครื่อง (ขวดเต็ม)',
+                thManage: 'จัดการ',
+                footerCredit: 'ผู้ดูแล: นาย ชัยวุฒิ พลอยพริ้ง (หัวหน้าไลน์ผลิตน้ำปลา)',
+                emptyPresetText: 'ยังไม่มีการบันทึกรูปแบบลูกค้า คุณสามารถตั้งค่าและกดเพิ่มรายชื่อใหม่ได้ทันที',
+                prodQtyUnit: 'กล่อง',
+                labelRunTime: 'เวลา =',
+                labelDeduct: 'ยอดปิดน้ำปลา =',
+                clearStep1Title: 'ยืนยันการล้างประวัติ?',
+                clearStep1Msg: 'คุณต้องการลบประวัติการคำนวณทั้งหมดใช่หรือไม่?',
+                clearStep2Title: '⚠️ เตือนครั้งสุดท้าย!',
+                clearStep2Msg: 'หากล้างประวัติแล้ว ข้อมูลประวัติทั้งหมดจะหายไปและไม่สามารถกู้คืนได้! คุณแน่ใจจริงๆ หรือไม่?',
+                clearStep2Btn: 'ยืนยันลบประวัติทั้งหมด',
+                toastClearSuccess: 'ล้างประวัติเรียบร้อยแล้ว',
+                toastSaveHistory: 'บันทึกข้อมูลลงในประวัติ เรียบร้อยแล้ว!'
+            },
+            EN: {
+                appTitle: 'Tiparos Fish Sauce Production Line Supervisor Section',
+                appSub: 'Operation Helper, Label Coder & Customer Memory System',
+                restoreTitle: 'Restore or Start Fresh?',
+                restoreDesc: 'Do you want to clear all previous inputs to start new, or keep existing data?',
+                btnModalClear: 'Clear All Data',
+                btnModalKeep: 'Keep Existing Data',
+                confirmDeleteTitle: 'Confirm Delete?',
+                confirmDeleteMsg: 'Are you sure you want to delete this item?',
+                confirmDeleteBtnText: 'Delete Item',
+                cancelBtnText: 'Cancel',
+                secPresetTitle: 'Customer Presets',
+                secPresetSub: 'Click customer to select product size',
+                lblActiveCustomer: 'Active Customer:',
+                lblSelectSize: 'Select Product Size:',
+                btnAddProduct: 'Add Product',
+                btnEditStore: 'Edit Store',
+                btnDeleteStore: 'Delete Store',
+                lblSaveNewPresetHelp: 'Want to add a new customer preset?',
+                btnSaveNewPreset: '+ Save as New Customer Preset',
+                secProdInfoTitle: 'Production Information',
+                lblProductSelect: 'Product / Size',
+                lblStoreName: 'Store / Customer Name',
+                lblTargetQty: 'Order Target (Boxes/Cartons)',
+                lblTimeCount: 'Machine Run Count (Bottles)',
+                lblHasDeduct: 'Include Fish Sauce Deduction',
+                lblDeductCount: 'Deduct Fish Sauce (Bottles)',
+                unitBottles: 'Bottles',
+                secDateConfigTitle: 'Date & Label Format Configuration',
+                lblMfgDate: '1. Production Date (MFG Date)',
+                lblMfgPrefix: '2. MFG Date Prefix',
+                lblBbfPrefix: '3. Expiry Date Prefix',
+                lblShelfLife: '4. Shelf Life',
+                lblDateFormat: '5. Date Format (A.D.)',
+                secOutputTitle: 'OUTPUT Result for Operations',
+                lockTextOpen: 'Editable',
+                lockTextLocked: 'Locked',
+                btnSaveHistory: 'Save Log',
+                btnCopy: 'Copy',
+                btnShareLine: 'Share LINE',
+                btnExcel: 'Excel',
+                btnPrint: 'Print/PDF',
+                secHistoryTitle: 'Recent Calculation History',
+                btnClearHistory: 'Clear History',
+                thTime: 'Time',
+                thProd: 'Product',
+                thStore: 'Store',
+                thMfg: 'MFG Date',
+                thBbf: 'BBF Date',
+                thRun: 'Run (Full Bottles)',
+                thManage: 'Manage',
+                footerCredit: 'Supervisor: Mr. Chaiwut Ploypring (Head of Production Line)',
+                emptyPresetText: 'No saved presets yet. Configure and click add new customer.',
+                prodQtyUnit: 'Cartons',
+                labelRunTime: 'Time =',
+                labelDeduct: 'Net Fish Sauce =',
+                clearStep1Title: 'Confirm Clear History?',
+                clearStep1Msg: 'Are you sure you want to clear all calculation history logs?',
+                clearStep2Title: '⚠️ Final Warning!',
+                clearStep2Msg: 'All history records will be PERMANENTLY ERASED and cannot be recovered! Are you absolutely sure?',
+                clearStep2Btn: 'Yes, Delete All History',
+                toastClearSuccess: 'History cleared successfully',
+                toastSaveHistory: 'Saved to history log successfully!'
+            }
+        };
+
+        const defaultGlobalPreset = {
+            id: 'preset_global',
+            name: 'โกลบอล',
+            products: ['เพท 700ml.', 'เพท 1500ml.', 'แกลลอน 4500ml.'],
+            mfgPrefix: 'MFG',
+            bbfPrefix: 'BBF',
+            shelfVal: 2,
+            shelfUnit: 'years',
+            fmt: 'DD/MM/YY'
+        };
+
+        let customPresets = JSON.parse(localStorage.getItem('tiparos_custom_presets')) || [defaultGlobalPreset];
+        let selectedPresetId = null;
+        let historyLogs = JSON.parse(localStorage.getItem('tiparos_calc_history')) || [];
+        let isTextLocked = false;
+        let onConfirmAction = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('mfgDate').valueAsDate = new Date();
+            checkSavedDataOnLoad();
+            updateLanguageUI();
+            renderPresetButtons();
+            toggleDeductSection();
+
+            // Bind Event Listeners Realtime
+            const inputs = document.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                ['input', 'change', 'keyup'].forEach(eventType => {
+                    input.addEventListener(eventType, () => {
+                        if (input.id === 'targetQty') {
+                            updateBottlesFromQty();
+                        }
+                        saveFormState();
+                        calculateAll();
+                    });
+                });
+            });
+
+            handleProductChange();
+            renderHistoryTable();
+            calculateAll();
+        });
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'TH' ? 'EN' : 'TH';
+            localStorage.setItem('tiparos_lang', currentLang);
+            updateLanguageUI();
+            calculateAll();
+            renderHistoryTable();
+            renderPresetButtons();
+        }
+
+        function updateLanguageUI() {
+            const t = translations[currentLang];
+            
+            document.getElementById('appTitleHeader').innerText = t.appTitle;
+            document.getElementById('appSubHeader').innerText = t.appSub;
+            document.getElementById('restoreTitle').innerText = t.restoreTitle;
+            document.getElementById('restoreDesc').innerText = t.restoreDesc;
+            document.getElementById('btnModalClear').innerText = t.btnModalClear;
+            document.getElementById('btnModalKeep').innerText = t.btnModalKeep;
+            document.getElementById('secPresetTitle').innerText = t.secPresetTitle;
+            document.getElementById('secPresetSub').innerText = t.secPresetSub;
+            document.getElementById('lblActiveCustomer').innerText = t.lblActiveCustomer;
+            document.getElementById('lblSelectSize').innerText = t.lblSelectSize;
+            document.getElementById('btnAddProduct').innerText = t.btnAddProduct;
+            document.getElementById('btnEditStore').innerText = t.btnEditStore;
+            document.getElementById('btnDeleteStore').innerText = t.btnDeleteStore;
+            document.getElementById('lblSaveNewPresetHelp').innerText = t.lblSaveNewPresetHelp;
+            document.getElementById('btnSaveNewPreset').innerText = t.btnSaveNewPreset;
+            document.getElementById('secProdInfoTitle').innerText = t.secProdInfoTitle;
+            document.getElementById('lblProductSelect').innerText = t.lblProductSelect;
+            document.getElementById('lblStoreName').innerText = t.lblStoreName;
+            document.getElementById('lblTargetQty').innerText = t.lblTargetQty;
+            document.getElementById('lblTimeCount').innerText = t.lblTimeCount;
+            document.getElementById('lblHasDeduct').innerText = t.lblHasDeduct;
+            document.getElementById('lblDeductCount').innerText = t.lblDeductCount;
+            document.getElementById('unitBottles1').innerText = t.unitBottles;
+            document.getElementById('unitBottles2').innerText = t.unitBottles;
+            document.getElementById('secDateConfigTitle').innerText = t.secDateConfigTitle;
+            document.getElementById('lblMfgDate').innerText = t.lblMfgDate;
+            document.getElementById('lblMfgPrefix').innerText = t.lblMfgPrefix;
+            document.getElementById('lblBbfPrefix').innerText = t.lblBbfPrefix;
+            document.getElementById('lblShelfLife').innerText = t.lblShelfLife;
+            document.getElementById('lblDateFormat').innerText = t.lblDateFormat;
+            document.getElementById('secOutputTitle').innerText = t.secOutputTitle;
+            document.getElementById('lockText').innerText = isTextLocked ? t.lockTextLocked : t.lockTextOpen;
+            document.getElementById('btnSaveHistory').innerText = t.btnSaveHistory;
+            document.getElementById('btnCopy').innerText = t.btnCopy;
+            document.getElementById('btnShareLine').innerText = t.btnShareLine;
+            document.getElementById('btnExcel').innerText = t.btnExcel;
+            document.getElementById('btnPrint').innerText = t.btnPrint;
+            document.getElementById('secHistoryTitle').innerText = t.secHistoryTitle;
+            document.getElementById('btnClearHistory').innerText = t.btnClearHistory;
+            document.getElementById('thTime').innerText = t.thTime;
+            document.getElementById('thProd').innerText = t.thProd;
+            document.getElementById('thStore').innerText = t.thStore;
+            document.getElementById('thMfg').innerText = t.thMfg;
+            document.getElementById('thBbf').innerText = t.thBbf;
+            document.getElementById('thRun').innerText = t.thRun;
+            document.getElementById('thManage').innerText = t.thManage;
+            document.getElementById('footerCredit').innerText = t.footerCredit;
+            document.getElementById('langLabel').innerText = currentLang === 'TH' ? 'TH | EN' : 'EN | TH';
+        }
+
+        function toggleDeductSection() {
+            const hasDeduct = document.getElementById('hasDeduct').checked;
+            const wrapper = document.getElementById('deductInputWrapper');
+            if (hasDeduct) {
+                wrapper.classList.remove('hidden');
+            } else {
+                wrapper.classList.add('hidden');
+                document.getElementById('deductCount').value = '';
+            }
+            calculateAll();
+        }
+
+        function showConfirmModal(title, message, yesBtnText, callback) {
+            const modal = document.getElementById('confirmModal');
+            document.getElementById('confirmTitle').innerText = title;
+            document.getElementById('confirmMessage').innerText = message;
+            document.getElementById('confirmYesText').innerText = yesBtnText || translations[currentLang].confirmDeleteBtnText;
+            document.getElementById('confirmNoText').innerText = translations[currentLang].cancelBtnText;
+            
+            onConfirmAction = callback;
+            
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            document.getElementById('confirmYesBtn').onclick = () => {
+                if (onConfirmAction) onConfirmAction();
+                closeConfirmModal();
+            };
+        }
+
+        function closeConfirmModal() {
+            const modal = document.getElementById('confirmModal');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            onConfirmAction = null;
+        }
+
+        function saveFormState() {
+            const formData = {
+                productSelect: document.getElementById('productSelect').value,
+                productCustom: document.getElementById('productCustom').value,
+                storeName: document.getElementById('storeName').value,
+                targetQty: document.getElementById('targetQty').value,
+                timeCount: document.getElementById('timeCount').value,
+                hasDeduct: document.getElementById('hasDeduct').checked,
+                deductCount: document.getElementById('deductCount').value,
+                mfgDate: document.getElementById('mfgDate').value,
+                mfgPrefixSelect: document.getElementById('mfgPrefixSelect').value,
+                mfgPrefixCustom: document.getElementById('mfgPrefixCustom').value,
+                bbfPrefixSelect: document.getElementById('bbfPrefixSelect').value,
+                bbfPrefixCustom: document.getElementById('bbfPrefixCustom').value,
+                shelfValue: document.getElementById('shelfValue').value,
+                shelfUnit: document.getElementById('shelfUnit').value,
+                dateFormat: document.getElementById('dateFormat').value,
+            };
+            localStorage.setItem('tiparos_form_state', JSON.stringify(formData));
+        }
+
+        function restoreFormState() {
+            const saved = localStorage.getItem('tiparos_form_state');
+            if (!saved) return;
+            try {
+                const data = JSON.parse(saved);
+                if (data.productSelect !== undefined) document.getElementById('productSelect').value = data.productSelect;
+                if (data.productCustom !== undefined) document.getElementById('productCustom').value = data.productCustom;
+                if (data.storeName !== undefined) document.getElementById('storeName').value = data.storeName;
+                if (data.targetQty !== undefined) document.getElementById('targetQty').value = data.targetQty;
+                if (data.timeCount !== undefined) document.getElementById('timeCount').value = data.timeCount;
+                if (data.hasDeduct !== undefined) {
+                    document.getElementById('hasDeduct').checked = data.hasDeduct;
+                    toggleDeductSection();
+                }
+                if (data.deductCount !== undefined) document.getElementById('deductCount').value = data.deductCount;
+                if (data.mfgDate) document.getElementById('mfgDate').value = data.mfgDate;
+                if (data.mfgPrefixSelect) document.getElementById('mfgPrefixSelect').value = data.mfgPrefixSelect;
+                if (data.mfgPrefixCustom !== undefined) document.getElementById('mfgPrefixCustom').value = data.mfgPrefixCustom;
+                if (data.bbfPrefixSelect) document.getElementById('bbfPrefixSelect').value = data.bbfPrefixSelect;
+                if (data.bbfPrefixCustom !== undefined) document.getElementById('bbfPrefixCustom').value = data.bbfPrefixCustom;
+                if (data.shelfValue) document.getElementById('shelfValue').value = data.shelfValue;
+                if (data.shelfUnit) document.getElementById('shelfUnit').value = data.shelfUnit;
+                if (data.dateFormat) document.getElementById('dateFormat').value = data.dateFormat;
+
+                toggleCustomPrefix('mfgPrefixSelect', 'mfgPrefixCustom');
+                toggleCustomPrefix('bbfPrefixSelect', 'bbfPrefixCustom');
+                handleProductChange();
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function checkSavedDataOnLoad() {
+            const hasFormState = localStorage.getItem('tiparos_form_state') !== null;
+            const hasHistory = historyLogs.length > 0;
+
+            if (hasFormState || hasHistory) {
+                showClearModal();
+            } else {
+                restoreFormState();
+            }
+        }
+
+        function showClearModal() {
+            const modal = document.getElementById('clearDataModal');
+            const box = document.getElementById('modalBox');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            box.classList.remove('scale-95');
+            box.classList.add('scale-100');
+        }
+
+        function handleClearModal(shouldClear) {
+            const modal = document.getElementById('clearDataModal');
+            const box = document.getElementById('modalBox');
+            
+            box.classList.remove('scale-100');
+            box.classList.add('scale-95');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+
+            if (shouldClear) {
+                localStorage.removeItem('tiparos_form_state');
+                localStorage.removeItem('tiparos_calc_history');
+                historyLogs = [];
+                resetForm();
+                renderHistoryTable();
+                showToast(currentLang === 'TH' ? 'เคลียร์ข้อมูลเรียบร้อย' : 'Data cleared successfully');
+            } else {
+                restoreFormState();
+                calculateAll();
+                showToast(currentLang === 'TH' ? 'โหลดข้อมูลเดิมเรียบร้อย' : 'Restored saved data');
+            }
+        }
+
+        function toggleCustomPrefix(selectId, customId) {
+            const select = document.getElementById(selectId);
+            const custom = document.getElementById(customId);
+            if (select.value === 'CUSTOM') {
+                custom.classList.remove('hidden');
+            } else {
+                custom.classList.add('hidden');
+            }
+            calculateAll();
+        }
+
+        function handleProductChange() {
+            const productSelect = document.getElementById('productSelect');
+            const productCustom = document.getElementById('productCustom');
+            const itemsPerBoxInput = document.getElementById('itemsPerBox');
+
+            if (productSelect.value === 'CUSTOM') {
+                productCustom.classList.remove('hidden');
+            } else {
+                productCustom.classList.add('hidden');
+                const selectedOption = productSelect.options[productSelect.selectedIndex];
+                const multiplier = selectedOption ? selectedOption.getAttribute('data-multiplier') : 12;
+                if (multiplier) {
+                    itemsPerBoxInput.value = multiplier;
+                }
+            }
+
+            updateBottlesFromQty();
+            calculateAll();
+        }
+
+        function updateBottlesFromQty() {
+            const targetQtyRaw = document.getElementById('targetQty').value;
+            const multiplier = parseFloat(document.getElementById('itemsPerBox').value) || 12;
+            
+            const match = targetQtyRaw.match(/\d+/);
+            if (match) {
+                const boxes = parseFloat(match[0]);
+                const totalBottles = boxes * multiplier;
+                document.getElementById('timeCount').value = totalBottles;
+            } else if (!targetQtyRaw) {
+                document.getElementById('timeCount').value = '';
+            }
+        }
+
+        function formatDate(date, format) {
+            const d = String(date.getDate()).padStart(2, '0');
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const yyyy = String(date.getFullYear());
+            const yy = yyyy.substring(2);
+
+            switch (format) {
+                case 'DD/MM/YY': return `${d}/${m}/${yy}`;
+                case 'DD/MM/YYYY': return `${d}/${m}/${yyyy}`;
+                case 'MM/DD/YY': return `${m}/${d}/${yy}`;
+                case 'MM/DD/YYYY': return `${m}/${d}/${yyyy}`;
+                case 'YY/MM/DD': return `${yy}/${m}/${d}`;
+                case 'YYYY/MM/DD': return `${yyyy}/${m}/${d}`;
+                case 'YY/DD/MM': return `${yy}/${d}/${m}`;
+                case 'YYYY/DD/MM': return `${yyyy}/${d}/${m}`;
+                default: return `${d}/${m}/${yy}`;
+            }
+        }
+
+        function getCleanPrefix(selectId, customId) {
+            const selectVal = document.getElementById(selectId).value;
+            const prefix = selectVal === 'CUSTOM' ? (document.getElementById(customId).value || '') : selectVal;
+            return prefix.replace(/:/g, '').trim();
+        }
+
+        function calculateAll() {
+            if (isTextLocked) return;
+
+            const mfgInputVal = document.getElementById('mfgDate').value;
+            if (!mfgInputVal) return;
+
+            const productSelect = document.getElementById('productSelect');
+            const t = translations[currentLang];
+
+            let productInfo = productSelect.value === 'CUSTOM' ? 
+                (document.getElementById('productCustom').value.trim() || 'สินค้า') : (productSelect.value || 'สินค้า');
+
+            const storeName = document.getElementById('storeName').value.trim() || 'ร้านค้า';
+            const targetQty = document.getElementById('targetQty').value.trim() || '0';
+            
+            const formattedQty = targetQty.includes('กล่อง') || targetQty.includes('ลัง') || targetQty.includes('Cartons') ? 
+                targetQty : `${targetQty} ${t.prodQtyUnit}`;
+
+            const mfgDate = new Date(mfgInputVal);
+            const shelfVal = parseInt(document.getElementById('shelfValue').value) || 0;
+            const shelfUnit = document.getElementById('shelfUnit').value;
+            const fmt = document.getElementById('dateFormat').value;
+
+            const bbfDate = new Date(mfgDate);
+            if (shelfUnit === 'days') bbfDate.setDate(bbfDate.getDate() + shelfVal);
+            else if (shelfUnit === 'months') bbfDate.setMonth(bbfDate.getMonth() + shelfVal);
+            else if (shelfUnit === 'years') bbfDate.setFullYear(bbfDate.getFullYear() + shelfVal);
+
+            const mfgPrefix = getCleanPrefix('mfgPrefixSelect', 'mfgPrefixCustom');
+            const bbfPrefix = getCleanPrefix('bbfPrefixSelect', 'bbfPrefixCustom');
+
+            const mfgText = `${mfgPrefix} ${formatDate(mfgDate, fmt)}`.trim();
+            const bbfText = `${bbfPrefix} ${formatDate(bbfDate, fmt)}`.trim();
+
+            const timeCountVal = parseFloat(document.getElementById('timeCount').value) || 0;
+            const hasDeduct = document.getElementById('hasDeduct').checked;
+
+            const line1 = `${productInfo} "${storeName}" ยอด ${formattedQty}`;
+            const line2 = mfgText;
+            let fullOutput = '';
+
+            if (hasDeduct) {
+                const deductCountVal = parseFloat(document.getElementById('deductCount').value) || 0;
+                const netCount = timeCountVal - deductCountVal;
+                const line3 = `${bbfText} ${t.labelRunTime} ${timeCountVal.toLocaleString()} ${t.unitBottles}`;
+                const line4 = `${t.labelDeduct} ${netCount.toLocaleString()} ${t.unitBottles}`;
+                fullOutput = `${line1}\n${line2}\n${line3}\n${line4}`;
+            } else {
+                const line3 = `${bbfText} ${t.labelRunTime} ${timeCountVal.toLocaleString()} ${t.unitBottles}`;
+                fullOutput = `${line1}\n${line2}\n${line3}`;
+            }
+
+            document.getElementById('showOutput').value = fullOutput;
+        }
+
+        function renderPresetButtons() {
+            const container = document.getElementById('presetButtonsContainer');
+            container.innerHTML = '';
+
+            if (customPresets.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full py-6 text-center text-slate-400 dark:text-slate-500 border border-dashed border-slate-200 dark:border-slate-700/60 rounded-xl">
+                        <i class="fa-solid fa-folder-open text-2xl mb-1 block"></i>
+                        <span class="text-xs">${translations[currentLang].emptyPresetText}</span>
+                    </div>
+                `;
+                document.getElementById('presetManagementBar').classList.add('hidden');
+                selectedPresetId = null;
+                return;
+            }
+
+            customPresets.forEach(preset => {
+                const isSelected = preset.id === selectedPresetId;
+                const btn = document.createElement('button');
+                btn.className = `px-3 py-2.5 rounded-xl text-xs font-semibold border text-left transition-all flex flex-col justify-between ${
+                    isSelected 
+                    ? 'bg-brand-600 text-white border-brand-600 shadow-md ring-2 ring-brand-300 dark:ring-brand-800' 
+                    : 'bg-slate-50 dark:bg-slate-900/60 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-brand-500 hover:text-brand-600'
+                }`;
+                btn.onclick = () => applyPreset(preset);
+                
+                const prodCount = (preset.products && preset.products.length) ? preset.products.length : 0;
+
+                btn.innerHTML = `
+                    <div class="flex items-center justify-between w-full">
+                        <span class="truncate font-bold">${preset.name}</span>
+                        <i class="fa-solid fa-chevron-down text-[10px] opacity-70"></i>
+                    </div>
+                    <span class="text-[10px] ${isSelected ? 'text-sky-100' : 'text-slate-400 dark:text-slate-500'} font-mono mt-0.5">
+                        <i class="fa-solid fa-boxes-packing mr-0.5"></i> ${prodCount} Items
+                    </span>
+                `;
+                container.appendChild(btn);
+            });
+
+            const mgmtBar = document.getElementById('presetManagementBar');
+            if (selectedPresetId) {
+                const activePreset = customPresets.find(p => p.id === selectedPresetId);
+                if (activePreset) {
+                    document.getElementById('activePresetName').innerText = activePreset.name;
+                    populateCustomerProductDropdown(activePreset);
+                    mgmtBar.classList.remove('hidden');
+                }
+            } else {
+                mgmtBar.classList.add('hidden');
+            }
+        }
+
+        function populateCustomerProductDropdown(preset) {
+            const dropdown = document.getElementById('customerProductDropdown');
+            dropdown.innerHTML = '';
+
+            const products = preset.products || ['เพท 700ml.', 'เพท 1500ml.'];
+            
+            products.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p;
+                opt.textContent = p;
+                dropdown.appendChild(opt);
+            });
+
+            if (products.length > 0) {
+                dropdown.selectedIndex = 0;
+                applyCustomerSubProduct(products[0]);
+            }
+        }
+
+        function handleCustomerProductSelect() {
+            const dropdown = document.getElementById('customerProductDropdown');
+            const selectedProduct = dropdown.value;
+            applyCustomerSubProduct(selectedProduct);
+        }
+
+        function applyCustomerSubProduct(productName) {
+            const productSelect = document.getElementById('productSelect');
+            let matched = false;
+
+            for (let i = 0; i < productSelect.options.length; i++) {
+                if (productSelect.options[i].value === productName) {
+                    productSelect.selectedIndex = i;
+                    matched = true;
+                    break;
+                }
+            }
+
+            if (!matched) {
+                productSelect.value = 'CUSTOM';
+                document.getElementById('productCustom').value = productName;
+                document.getElementById('productCustom').classList.remove('hidden');
+            } else {
+                document.getElementById('productCustom').classList.add('hidden');
+            }
+
+            handleProductChange();
+        }
+
+        function addCustomProductToActivePreset() {
+            if (!selectedPresetId) return;
+            const index = customPresets.findIndex(p => p.id === selectedPresetId);
+            if (index === -1) return;
+
+            const newProd = prompt(`เพิ่มขนาด/รายการสินค้าใหม่ สำหรับลูกค้า "${customPresets[index].name}":`, 'เพท 700ml.');
+            if (!newProd) return;
+
+            if (!customPresets[index].products) customPresets[index].products = [];
+            if (!customPresets[index].products.includes(newProd)) {
+                customPresets[index].products.push(newProd);
+                localStorage.setItem('tiparos_custom_presets', JSON.stringify(customPresets));
+                renderPresetButtons();
+                showToast(`เพิ่ม "${newProd}" เรียบร้อยแล้ว`);
+            } else {
+                showToast('มีรายการสินค้านี้อยู่แล้ว', 'error');
+            }
+        }
+
+        function applyPreset(preset) {
+            selectedPresetId = preset.id;
+
+            if (preset.name) {
+                document.getElementById('storeName').value = preset.name;
+            }
+
+            const mfgSelect = document.getElementById('mfgPrefixSelect');
+            if ([...mfgSelect.options].some(opt => opt.value === preset.mfgPrefix)) {
+                mfgSelect.value = preset.mfgPrefix;
+                document.getElementById('mfgPrefixCustom').classList.add('hidden');
+            } else {
+                mfgSelect.value = 'CUSTOM';
+                document.getElementById('mfgPrefixCustom').value = preset.mfgPrefix;
+                document.getElementById('mfgPrefixCustom').classList.remove('hidden');
+            }
+
+            const bbfSelect = document.getElementById('bbfPrefixSelect');
+            if ([...bbfSelect.options].some(opt => opt.value === preset.bbfPrefix)) {
+                bbfSelect.value = preset.bbfPrefix;
+                document.getElementById('bbfPrefixCustom').classList.add('hidden');
+            } else {
+                bbfSelect.value = 'CUSTOM';
+                document.getElementById('bbfPrefixCustom').value = preset.bbfPrefix;
+                document.getElementById('bbfPrefixCustom').classList.remove('hidden');
+            }
+
+            document.getElementById('shelfValue').value = preset.shelfVal || 2;
+            document.getElementById('shelfUnit').value = preset.shelfUnit || 'years';
+            document.getElementById('dateFormat').value = preset.fmt || 'DD/MM/YY';
+
+            renderPresetButtons();
+            saveFormState();
+            calculateAll();
+            showToast(`โหลดรูปแบบของ "${preset.name}" เรียบร้อยแล้ว`);
+        }
+
+        function saveCurrentAsPreset() {
+            const defaultName = document.getElementById('storeName').value.trim() || 'ลูกค้าใหม่';
+            const presetName = prompt('ระบุชื่อร้านค้า / ลูกค้า สำหรับบันทึกรูปแบบนี้:', defaultName);
+            if (!presetName) return;
+
+            const mfgPrefix = getCleanPrefix('mfgPrefixSelect', 'mfgPrefixCustom');
+            const bbfPrefix = getCleanPrefix('bbfPrefixSelect', 'bbfPrefixCustom');
+            const shelfVal = parseInt(document.getElementById('shelfValue').value) || 2;
+            const shelfUnit = document.getElementById('shelfUnit').value;
+            const fmt = document.getElementById('dateFormat').value;
+
+            const currentProd = document.getElementById('productSelect').value === 'CUSTOM' ?
+                document.getElementById('productCustom').value : document.getElementById('productSelect').value;
+
+            const newPreset = {
+                id: 'custom_' + Date.now(),
+                name: presetName,
+                products: currentProd ? [currentProd] : ['เพท 700ml.', 'เพท 1500ml.'],
+                mfgPrefix,
+                bbfPrefix,
+                shelfVal,
+                shelfUnit,
+                fmt
+            };
+
+            customPresets.push(newPreset);
+            localStorage.setItem('tiparos_custom_presets', JSON.stringify(customPresets));
+            selectedPresetId = newPreset.id;
+            renderPresetButtons();
+            showToast(`บันทึกรูปแบบ "${presetName}" เรียบร้อยแล้ว`);
+        }
+
+        function editSelectedPreset() {
+            if (!selectedPresetId) return;
+            const index = customPresets.findIndex(p => p.id === selectedPresetId);
+            if (index === -1) return;
+
+            const current = customPresets[index];
+            const newName = prompt('แก้ไขชื่อร้านค้า / ลูกค้า:', current.name);
+            if (!newName) return;
+
+            const mfgPrefix = getCleanPrefix('mfgPrefixSelect', 'mfgPrefixCustom');
+            const bbfPrefix = getCleanPrefix('bbfPrefixSelect', 'bbfPrefixCustom');
+            const shelfVal = parseInt(document.getElementById('shelfValue').value) || 2;
+            const shelfUnit = document.getElementById('shelfUnit').value;
+            const fmt = document.getElementById('dateFormat').value;
+
+            customPresets[index] = {
+                ...current,
+                name: newName,
+                mfgPrefix,
+                bbfPrefix,
+                shelfVal,
+                shelfUnit,
+                fmt
+            };
+
+            localStorage.setItem('tiparos_custom_presets', JSON.stringify(customPresets));
+            renderPresetButtons();
+            showToast(`แก้ไขข้อมูล "${newName}" เรียบร้อยแล้ว`);
+        }
+
+        // Custom Confirm Delete Preset
+        function confirmDeleteSelectedPreset() {
+            if (!selectedPresetId) return;
+            const current = customPresets.find(p => p.id === selectedPresetId);
+            if (!current) return;
+
+            const t = translations[currentLang];
+            showConfirmModal(
+                t.confirmDeleteTitle,
+                `${t.confirmDeleteMsg} ("${current.name}")`,
+                t.confirmDeleteBtnText,
+                () => {
+                    customPresets = customPresets.filter(p => p.id !== selectedPresetId);
+                    localStorage.setItem('tiparos_custom_presets', JSON.stringify(customPresets));
+                    selectedPresetId = null;
+                    renderPresetButtons();
+                    showToast(currentLang === 'TH' ? 'ลบรายการเรียบร้อยแล้ว' : 'Item deleted successfully');
+                }
+            );
+        }
+
+        function confirmResetForm() {
+            const t = translations[currentLang];
+            showConfirmModal(
+                t.confirmDeleteTitle,
+                currentLang === 'TH' ? 'คุณต้องการล้างข้อมูลที่กำลังกรอกอยู่ทั้งหมดใช่หรือไม่?' : 'Are you sure you want to reset all current inputs?',
+                currentLang === 'TH' ? 'ล้างข้อมูล' : 'Reset Inputs',
+                () => {
+                    resetForm();
+                    showToast(currentLang === 'TH' ? 'ล้างข้อมูลการกรอกเรียบร้อย' : 'Form reset successfully');
+                }
+            );
+        }
+
+        // Two-Step Double Confirmation for Clear History
+        function confirmClearHistoryStep1() {
+            const t = translations[currentLang];
+            showConfirmModal(
+                t.clearStep1Title,
+                t.clearStep1Msg,
+                currentLang === 'TH' ? 'ถัดไป >' : 'Next >',
+                () => {
+                    setTimeout(() => {
+                        confirmClearHistoryStep2();
+                    }, 200);
+                }
+            );
+        }
+
+        function confirmClearHistoryStep2() {
+            const t = translations[currentLang];
+            showConfirmModal(
+                t.clearStep2Title,
+                t.clearStep2Msg,
+                t.clearStep2Btn,
+                () => {
+                    historyLogs = [];
+                    localStorage.removeItem('tiparos_calc_history');
+                    renderHistoryTable();
+                    showToast(t.toastClearSuccess);
+                }
+            );
+        }
+
+        function toggleLockTextarea() {
+            isTextLocked = !isTextLocked;
+            const textarea = document.getElementById('showOutput');
+            const lockIcon = document.getElementById('lockIcon');
+            const lockText = document.getElementById('lockText');
+            const t = translations[currentLang];
+
+            if (isTextLocked) {
+                textarea.readOnly = true;
+                textarea.classList.add('bg-slate-100', 'dark:bg-slate-800', 'cursor-not-allowed');
+                lockIcon.className = 'fa-solid fa-lock text-rose-500';
+                lockText.innerText = t.lockTextLocked;
+                showToast(currentLang === 'TH' ? 'ล็อคข้อความเรียบร้อย' : 'Output locked');
+            } else {
+                textarea.readOnly = false;
+                textarea.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'cursor-not-allowed');
+                lockIcon.className = 'fa-solid fa-lock-open text-amber-500';
+                lockText.innerText = t.lockTextOpen;
+                showToast(currentLang === 'TH' ? 'ปลดล็อคข้อความเรียบร้อย' : 'Output unlocked');
+            }
+        }
+
+        async function copyResult() {
+            const outputText = document.getElementById('showOutput').value;
+            try {
+                await navigator.clipboard.writeText(outputText);
+                showToast(currentLang === 'TH' ? 'คัดลอกข้อความ OUTPUT สำเร็จ!' : 'Copied output to clipboard!');
+            } catch (err) {
+                showToast('Failed to copy', 'error');
+            }
+        }
+
+        function shareToLine() {
+            const outputText = document.getElementById('showOutput').value;
+            const url = `https://line.me/R/msg/text/?${encodeURIComponent(outputText)}`;
+            window.open(url, '_blank');
+        }
+
+        function exportToExcel() {
+            const outputText = document.getElementById('showOutput').value;
+            const lines = outputText.split('\n').map(l => [l]);
+
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet([
+                ["--- รายงานระบบช่วยหัวหน้าเดินเครื่องผลิต (งานนอก) ---"],
+                ...lines
+            ]);
+
+            ws['!cols'] = [{ wch: 60 }];
+            XLSX.utils.book_append_sheet(wb, ws, "รายงานไลน์ผลิต");
+
+            const storeName = document.getElementById('storeName').value.trim() || 'รายงาน';
+            const fileName = `รายงานฉลาก_${storeName}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+            
+            showToast(currentLang === 'TH' ? 'ส่งออกไฟล์ Excel เรียบร้อยแล้ว' : 'Excel file exported successfully');
+        }
+
+        function printWorkOrder() {
+            window.print();
+        }
+
+        function clearProductionInfoInputs() {
+            document.getElementById('productSelect').value = '';
+            document.getElementById('productCustom').value = '';
+            document.getElementById('productCustom').classList.add('hidden');
+            document.getElementById('storeName').value = '';
+            document.getElementById('targetQty').value = '';
+            document.getElementById('timeCount').value = '';
+            document.getElementById('hasDeduct').checked = false;
+            toggleDeductSection();
+            document.getElementById('showOutput').value = '';
+            saveFormState();
+        }
+
+        function userSaveToHistoryLog() {
+            const timeCountVal = document.getElementById('timeCount').value;
+            const targetQtyVal = document.getElementById('targetQty').value;
+
+            if (!targetQtyVal && !timeCountVal) {
+                showToast(currentLang === 'TH' ? 'กรุณากรอกข้อมูลงานผลิตก่อนบันทึก' : 'Please fill production info first', 'error');
+                return;
+            }
+
+            saveToHistoryLog();
+            clearProductionInfoInputs();
+            showToast(translations[currentLang].toastSaveHistory);
+        }
+
+        function saveToHistoryLog() {
+            const productSelect = document.getElementById('productSelect');
+            const productInfo = productSelect.value === 'CUSTOM' ? document.getElementById('productCustom').value : productSelect.value;
+            const storeName = document.getElementById('storeName').value || '-';
+            
+            const timeCountVal = parseFloat(document.getElementById('timeCount').value) || 0;
+
+            const mfgInputVal = document.getElementById('mfgDate').value;
+            const mfgDate = mfgInputVal ? new Date(mfgInputVal) : new Date();
+            const shelfVal = parseInt(document.getElementById('shelfValue').value) || 2;
+            const shelfUnit = document.getElementById('shelfUnit').value;
+            const fmt = document.getElementById('dateFormat').value;
+
+            const bbfDate = new Date(mfgDate);
+            if (shelfUnit === 'days') bbfDate.setDate(bbfDate.getDate() + shelfVal);
+            else if (shelfUnit === 'months') bbfDate.setMonth(bbfDate.getMonth() + shelfVal);
+            else if (shelfUnit === 'years') bbfDate.setFullYear(bbfDate.getFullYear() + shelfVal);
+
+            const mfgPrefix = getCleanPrefix('mfgPrefixSelect', 'mfgPrefixCustom');
+            const bbfPrefix = getCleanPrefix('bbfPrefixSelect', 'bbfPrefixCustom');
+
+            const logItem = {
+                id: Date.now(),
+                timestamp: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }),
+                product: productInfo || '-',
+                store: storeName,
+                mfg: `${mfgPrefix} ${formatDate(mfgDate, fmt)}`,
+                bbf: `${bbfPrefix} ${formatDate(bbfDate, fmt)}`,
+                totalCount: timeCountVal ? timeCountVal.toLocaleString() : '0',
+                fullText: document.getElementById('showOutput').value
+            };
+
+            historyLogs.unshift(logItem);
+            if (historyLogs.length > 20) historyLogs.pop();
+
+            localStorage.setItem('tiparos_calc_history', JSON.stringify(historyLogs));
+            renderHistoryTable();
+        }
+
+        function renderHistoryTable() {
+            const tbody = document.getElementById('historyTableBody');
+            tbody.innerHTML = '';
+
+            if (historyLogs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="py-4 text-center text-slate-400">${currentLang === 'TH' ? 'ยังไม่มีประวัติการบันทึกรายการ' : 'No history logs found'}</td></tr>`;
+                return;
+            }
+
+            historyLogs.forEach(log => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors";
+                tr.innerHTML = `
+                    <td class="py-2.5 px-3 font-mono text-slate-400">${log.timestamp}</td>
+                    <td class="py-2.5 px-3 font-bold text-slate-700 dark:text-slate-200">${log.product}</td>
+                    <td class="py-2.5 px-3">${log.store}</td>
+                    <td class="py-2.5 px-3 font-mono">${log.mfg}</td>
+                    <td class="py-2.5 px-3 font-mono text-brand-600 dark:text-brand-400">${log.bbf}</td>
+                    <td class="py-2.5 px-3 font-semibold text-slate-800 dark:text-slate-100">${log.totalCount}</td>
+                    <td class="py-2.5 px-3 text-center">
+                        <button onclick="copyHistoryText('${log.id}')" class="text-slate-500 hover:text-brand-600 p-1" title="คัดลอกรายการนี้">
+                            <i class="fa-solid fa-copy"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function copyHistoryText(id) {
+            const item = historyLogs.find(l => l.id == id);
+            if (item) {
+                navigator.clipboard.writeText(item.fullText);
+                showToast(currentLang === 'TH' ? 'คัดลอกข้อความจากประวัติเรียบร้อย!' : 'Copied log to clipboard!');
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('mfgDate').valueAsDate = new Date();
+            clearProductionInfoInputs();
+            document.getElementById('mfgPrefixSelect').value = 'MFG';
+            document.getElementById('mfgPrefixCustom').value = '';
+            document.getElementById('bbfPrefixSelect').value = 'BBF';
+            document.getElementById('bbfPrefixCustom').value = '';
+            document.getElementById('shelfValue').value = '2';
+            document.getElementById('shelfUnit').value = 'years';
+            document.getElementById('dateFormat').value = 'DD/MM/YY';
+            
+            toggleCustomPrefix('mfgPrefixSelect', 'mfgPrefixCustom');
+            toggleCustomPrefix('bbfPrefixSelect', 'bbfPrefixCustom');
+
+            selectedPresetId = null;
+            localStorage.removeItem('tiparos_form_state');
+            renderPresetButtons();
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            const themeIcon = document.getElementById('themeIcon');
+            themeIcon.className = isDark ? 'fa-solid fa-sun text-amber-400' : 'fa-solid fa-moon';
+            localStorage.setItem('tiparos_theme', isDark ? 'dark' : 'light');
+        }
+
+        if (localStorage.getItem('tiparos_theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+            document.getElementById('themeIcon').className = 'fa-solid fa-sun text-amber-400';
+        }
+
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.innerText = msg;
+            toastIcon.className = type === 'success' ? 
+                'fa-solid fa-circle-check text-emerald-400 text-lg' : 
+                'fa-solid fa-circle-exclamation text-rose-400 text-lg';
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

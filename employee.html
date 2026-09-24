@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="th" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ส่วนงานหัวหน้าไลน์ผลิตน้ำปลา ทิพรส</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Sarabun -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- ApexCharts -->
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Sarabun', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f0f7ff',
+              100: '#e0effe',
+              500: '#0284c7',
+              600: '#0369a1',
+              700: '#075985',
+              800: '#0c4a6e',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Sarabun', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .dark ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 99px;
+    }
+    html:not(.dark) ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 99px;
+    }
+
+    /* ซ่อนพื้นที่พิมพ์ในหน้าจอปกติ 100% เพื่อไม่ให้ไปโผล่กวนใจบนหน้าเพจ */
+    .print-container {
+      display: none !important;
+    }
+
+    /* สไตล์สำหรับการพิมพ์กระดาษ A4 (25 บรรทัด ฟอนต์ Angsana New) */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 5mm;
+      }
+      body {
+        background: white !important;
+        color: black !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      
+      /* แสดงเฉพาะตัวที่ถูกเรียกสั่งพิมพ์งานเท่านั้น */
+      .print-container.print-active {
+        display: block !important;
+        font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif !important;
+      }
+      .print-container.print-inactive {
+        display: none !important;
+      }
+
+      .print-table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        border: 1.5px solid #000 !important;
+        table-layout: fixed !important;
+      }
+      .print-table th, .print-table td {
+        border: 1px solid #000 !important;
+        padding: 2px 4px !important;
+        color: #000 !important;
+        font-size: 15px !important;
+        height: 19px !important;
+        overflow: hidden !important;
+        white-space: nowrap !important;
+        font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif !important;
+      }
+      .print-table th {
+        background-color: #f3f4f6 !important;
+        font-size: 16px !important;
+        font-weight: bold !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-700 dark:bg-slate-950 dark:text-slate-200 min-h-screen flex flex-col font-normal text-sm leading-relaxed antialiased selection:bg-sky-500 selection:text-white">
+
+  <!-- Header -->
+  <header class="bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 sticky top-0 z-30 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Brand Title & Navigation Tabs -->
+        <div class="flex items-center gap-6">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-sky-700 text-white flex items-center justify-center font-medium text-base shadow-xs">
+              <i class="fa-solid fa-users-gear"></i>
+            </div>
+            <div>
+              <h1 class="text-base font-semibold text-slate-900 dark:text-white tracking-tight leading-snug">
+                ส่วนงานหัวหน้าไลน์ผลิตน้ำปลา ทิพรส
+              </h1>
+              <p class="text-xs text-slate-400 dark:text-slate-400 font-light">ระบบบริหารจัดการพนักงานและสายการผลิต</p>
+            </div>
+          </div>
+
+          <!-- Tab Navigation -->
+          <div class="hidden md:flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-lg gap-1">
+            <button onclick="switchPage('employee')" id="tabBtnEmployee" class="px-3 py-1.5 rounded-md text-xs font-medium bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs transition-all">
+              <i class="fa-solid fa-address-book text-sky-600 mr-1.5"></i> จัดการพนักงาน & เงินช่วยงานศพ
+            </button>
+            <button onclick="switchPage('ot')" id="tabBtnOt" class="px-3 py-1.5 rounded-md text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
+              <i class="fa-solid fa-clock-rotate-left text-indigo-600 mr-1.5"></i> ระบบใบเบิก OT (แยกหน้า)
+            </button>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-2">
+          <button id="themeToggleBtn" onclick="toggleTheme()" title="เปลี่ยนโหมดสี" class="p-2 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
+          </button>
+          <button onclick="exportToCSV()" class="hidden sm:flex px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-medium transition-colors items-center gap-1.5">
+            <i class="fa-solid fa-file-excel text-emerald-600 dark:text-emerald-400"></i>
+            <span>ส่งออก CSV</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Tab Navigation Bar -->
+  <div class="md:hidden flex bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 p-2 no-print gap-2">
+    <button onclick="switchPage('employee')" id="mobileTabBtnEmployee" class="flex-1 py-2 rounded-lg text-xs font-medium bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 text-center">
+      พนักงาน & เงินช่วยงานศพ
+    </button>
+    <button onclick="switchPage('ot')" id="mobileTabBtnOt" class="flex-1 py-2 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 text-center">
+      ระบบใบเบิก OT
+    </button>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- PAGE 1: จัดการพนักงาน & รายงานเงินช่วยค่างานศพ -->
+  <!-- ========================================== -->
+  <main id="pageEmployee" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 no-print">
+
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <h2 class="text-lg font-semibold text-slate-900 dark:text-white">จัดการข้อมูลพนักงานและพิมพ์รายงานเงินช่วยงานศพ</h2>
+        <p class="text-xs text-slate-500 dark:text-slate-400">เรียกดูรายชื่อ จัดการพนักงาน และสั่งพิมพ์รายงานเงินช่วยค่างานศพประจำหน่วยงาน</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="openFuneralModal()" class="px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium transition-colors flex items-center gap-1.5 shadow-xs">
+          <i class="fa-solid fa-hand-holding-dollar text-xs"></i>
+          <span>พิมพ์รายงานเงินช่วยงานศพ</span>
+        </button>
+        <button onclick="openModal('add')" class="px-3.5 py-2 rounded-lg bg-sky-700 hover:bg-sky-800 text-white text-xs font-medium transition-colors flex items-center gap-1.5 shadow-xs">
+          <i class="fa-solid fa-user-plus text-xs"></i>
+          <span>เพิ่มพนักงาน</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="bg-white dark:bg-slate-900 rounded-xl p-4 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-slate-400 dark:text-slate-400 tracking-wide">พนักงานทั้งหมด</p>
+          <h3 id="statTotal" class="text-2xl font-semibold text-slate-900 dark:text-white mt-1">0</h3>
+          <p class="text-[11px] text-slate-400 font-light mt-0.5">จำนวนรวมในระบบ</p>
+        </div>
+        <div class="w-10 h-10 rounded-lg bg-sky-50 dark:bg-sky-950/40 border border-sky-100 dark:border-sky-900/50 text-sky-600 dark:text-sky-400 flex items-center justify-center text-base">
+          <i class="fa-solid fa-users"></i>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 rounded-xl p-4 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-slate-400 dark:text-slate-400 tracking-wide">จำนวนแผนก</p>
+          <h3 id="statDepts" class="text-2xl font-semibold text-slate-900 dark:text-white mt-1">0</h3>
+          <p class="text-[11px] text-slate-400 font-light mt-0.5">แผนกหลักที่สังกัด</p>
+        </div>
+        <div class="w-10 h-10 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-100 dark:border-amber-900/50 text-amber-600 dark:text-amber-400 flex items-center justify-center text-base">
+          <i class="fa-solid fa-sitemap"></i>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 rounded-xl p-4 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-slate-400 dark:text-slate-400 tracking-wide">หน่วยงาน / ไลน์ผลิต</p>
+          <h3 id="statUnits" class="text-2xl font-semibold text-slate-900 dark:text-white mt-1">0</h3>
+          <p class="text-[11px] text-slate-400 font-light mt-0.5">สายการผลิตและสนับสนุน</p>
+        </div>
+        <div class="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-base">
+          <i class="fa-solid fa-industry"></i>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 rounded-xl p-4 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-medium text-slate-400 dark:text-slate-400 tracking-wide">สถานะปกติ</p>
+          <h3 id="statActive" class="text-2xl font-semibold text-slate-900 dark:text-white mt-1">0</h3>
+          <p class="text-[11px] text-emerald-600 dark:text-emerald-400 font-light mt-0.5">พร้อมปฏิบัติงาน</p>
+        </div>
+        <div class="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-base">
+          <i class="fa-solid fa-user-check"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800 p-5">
+      <div class="flex items-center justify-between mb-3 border-b border-slate-100 dark:border-slate-800/80 pb-3">
+        <h2 class="text-sm font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2 tracking-wide">
+          <i class="fa-solid fa-chart-column text-sky-600 dark:text-sky-400"></i>
+          สัดส่วนพนักงานจำแนกตามหน่วยงาน / ไลน์ผลิต
+        </h2>
+      </div>
+      <div id="chartUnits" class="w-full h-80"></div>
+    </div>
+
+    <!-- Table Wrapper -->
+    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800 overflow-hidden">
+      
+      <!-- Filter Bar -->
+      <div class="p-4 bg-slate-50/50 dark:bg-slate-900/50 border-b border-slate-200/80 dark:border-slate-800 flex flex-col md:flex-row gap-3 justify-between items-stretch md:items-center">
+        <div class="relative flex-1 max-w-xs">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+          <input 
+            type="text" 
+            id="searchInput" 
+            oninput="handleSearch()"
+            placeholder="ค้นหาชื่อ, รหัส, แผนก..." 
+            class="w-full pl-9 pr-3 py-1.5 rounded-lg text-xs font-light bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-600 transition-colors"
+          >
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <div class="flex items-center gap-1.5">
+            <label class="text-xs text-slate-400 dark:text-slate-400 font-light hidden sm:inline">แผนก:</label>
+            <select 
+              id="deptFilter" 
+              onchange="handleFilter()"
+              class="px-2.5 py-1.5 rounded-lg text-xs font-light bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-600 transition-colors"
+            >
+              <option value="ALL">ทุกแผนก</option>
+              <option value="02">02</option>
+              <option value="03">03</option>
+              <option value="05">05</option>
+              <option value="07">07</option>
+              <option value="23">23</option>
+              <option value="25">25</option>
+            </select>
+          </div>
+
+          <div class="flex items-center gap-1.5">
+            <label class="text-xs text-slate-400 dark:text-slate-400 font-light hidden sm:inline">หน่วยงาน:</label>
+            <select 
+              id="unitFilter" 
+              onchange="handleFilter()"
+              class="px-2.5 py-1.5 rounded-lg text-xs font-light bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-600 transition-colors"
+            >
+              <option value="ALL">ทุกหน่วยงาน / ไลน์ผลิต</option>
+              <option value="หน่วยงานเสริม">หน่วยงานเสริม</option>
+              <option value="ไลน์ผลิต F.01">ไลน์ผลิต F.01</option>
+              <option value="ไลน์ผลิต F.02">ไลน์ผลิต F.02</option>
+              <option value="ไลน์ผลิต F.03">ไลน์ผลิต F.03</option>
+              <option value="ไลน์ผลิต F.04">ไลน์ผลิต F.04</option>
+              <option value="หน่วยงาน รถโฟล์คลิฟท์">หน่วยงาน รถโฟล์คลิฟท์</option>
+              <option value="หน่วยงาน LAB">หน่วยงาน LAB</option>
+              <option value="หน่วยงาน ช่าง">หน่วยงาน ช่าง</option>
+              <option value="หน่วยงาน รอบนอก">หน่วยงาน รอบนอก</option>
+              <option value="หน่วยงาน ผงปรุงรส">หน่วยงาน ผงปรุงรส</option>
+              <option value="หน่วยงาน น้ำปลาพริกซอง">หน่วยงาน น้ำปลาพริกซอง</option>
+              <option value="หน่วยงาน น้ำส้ม">หน่วยงาน น้ำส้ม</option>
+            </select>
+          </div>
+
+          <div class="text-xs text-slate-500 dark:text-slate-400 px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/60 font-light ml-auto md:ml-0">
+            พบ <span id="showingCount" class="font-medium text-sky-600 dark:text-sky-400">0</span> รายการ
+          </div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead>
+            <tr class="bg-slate-50/80 dark:bg-slate-800/40 text-slate-500 dark:text-slate-400 font-medium border-b border-slate-200/80 dark:border-slate-800">
+              <th class="py-3 px-4 text-center w-12 font-normal">#</th>
+              <th class="py-3 px-4 text-center w-20 font-normal">แผนก</th>
+              <th class="py-3 px-4 w-28 font-normal">รหัสพนักงาน</th>
+              <th class="py-3 px-4 font-normal">ชื่อ - นามสกุล</th>
+              <th class="py-3 px-4 font-normal">หน่วยงาน / ไลน์ผลิต</th>
+              <th class="py-3 px-4 text-center w-28 font-normal">สถานะ</th>
+              <th class="py-3 px-4 text-center w-28 font-normal">จัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="employeeTableBody" class="divide-y divide-slate-100 dark:divide-slate-800/60 font-light"></tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="p-3 bg-slate-50/50 dark:bg-slate-900/50 border-t border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-400 font-light">
+        <div>แสดงข้อมูลบุคลากรในระบบ</div>
+        <div class="flex items-center gap-1.5" id="paginationControls"></div>
+      </div>
+    </div>
+
+  </main>
+
+
+  <!-- ========================================== -->
+  <!-- PAGE 2: ระบบจัดการและพิมพ์ใบเบิก OT -->
+  <!-- ========================================== -->
+  <main id="pageOt" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 no-print hidden">
+    
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
+      <div>
+        <h2 class="text-lg font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+          <i class="fa-solid fa-clock-rotate-left text-indigo-600"></i> จัดการใบเบิกค่าทำงานล่วงเวลา (OT)
+        </h2>
+        <p class="text-xs text-slate-500 dark:text-slate-400">เลือกพนักงานจากหลายหน่วยงาน จัดสรรหน้าที่การทำงาน และพิมพ์ใบเบิก OT (A4 25 บรรทัดพอดี)</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="printOtA4()" class="px-4 py-2 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-900 text-white flex items-center gap-1.5 shadow-xs transition-colors">
+          <i class="fa-solid fa-print"></i> พิมพ์ A4 (PDF)
+        </button>
+        <button onclick="exportOtExcel()" class="px-4 py-2 rounded-lg text-xs font-medium bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 shadow-xs transition-colors">
+          <i class="fa-solid fa-file-excel"></i> ส่งออก Excel
+        </button>
+      </div>
+    </div>
+
+    <!-- ข้อมูลตั้งค่า OT -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 text-xs shadow-xs">
+      <div>
+        <label class="block font-medium text-slate-600 dark:text-slate-300 mb-1">กรองดูรายชื่อหน่วยงานฝั่งซ้าย</label>
+        <select id="otUnitSelect" onchange="loadOtEmployees()" class="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-indigo-600">
+          <option value="ALL">ทุกหน่วยงาน / ไลน์ผลิต</option>
+          <option value="หน่วยงานเสริม">หน่วยงานเสริม</option>
+          <option value="ไลน์ผลิต F.01">ไลน์ผลิต F.01</option>
+          <option value="ไลน์ผลิต F.02">ไลน์ผลิต F.02</option>
+          <option value="ไลน์ผลิต F.03">ไลน์ผลิต F.03</option>
+          <option value="ไลน์ผลิต F.04">ไลน์ผลิต F.04</option>
+          <option value="หน่วยงาน รถโฟล์คลิฟท์">หน่วยงาน รถโฟล์คลิฟท์</option>
+          <option value="หน่วยงาน LAB">หน่วยงาน LAB</option>
+          <option value="หน่วยงาน ช่าง">หน่วยงาน ช่าง</option>
+          <option value="หน่วยงาน รอบนอก">หน่วยงาน รอบนอก</option>
+          <option value="หน่วยงาน ผงปรุงรส">หน่วยงาน ผงปรุงรส</option>
+          <option value="หน่วยงาน น้ำปลาพริกซอง">หน่วยงาน น้ำปลาพริกซอง</option>
+          <option value="หน่วยงาน น้ำส้ม">หน่วยงาน น้ำส้ม</option>
+        </select>
+      </div>
+      <div>
+        <label class="block font-medium text-slate-600 dark:text-slate-300 mb-1">พิมพ์ชื่อหัวข้อหน่วยงานในใบเบิก</label>
+        <input type="text" id="otCustomUnitInput" placeholder="พิมพ์ชื่อหน่วยงาน..." class="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100">
+      </div>
+      <div>
+        <label class="block font-medium text-slate-600 dark:text-slate-300 mb-1">วันที่ทำ OT</label>
+        <input type="date" id="otDateInput" class="w-full px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-indigo-600">
+      </div>
+      <div>
+        <label class="block font-medium text-slate-600 dark:text-slate-300 mb-1">เวลาเริ่ม - เลิกงาน</label>
+        <div class="flex items-center gap-1">
+          <input type="text" id="otStartTimeInput" placeholder="17:00" value="17:00" class="w-full px-2 py-2 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-center">
+          <span>-</span>
+          <input type="text" id="otEndTimeInput" placeholder="21:00" value="21:00" class="w-full px-2 py-2 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-center">
+        </div>
+      </div>
+    </div>
+
+    <!-- ส่วนเลือกพนักงาน 2 ฝั่ง -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <!-- ฝั่งซ้าย: รายชื่อให้เลือก -->
+      <div class="flex flex-col bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-xs h-[520px]">
+        <div class="flex items-center justify-between mb-3 gap-2">
+          <span class="text-xs font-semibold text-slate-700 dark:text-slate-300">
+            <i class="fa-solid fa-list-check text-indigo-600"></i> เลือกพนักงาน (เลือกจากหลายหน่วยงานได้อิสระ)
+          </span>
+          <button onclick="resetOtSelection()" class="px-2.5 py-1 rounded text-[11px] font-medium bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50 transition-colors">
+            <i class="fa-solid fa-rotate-right"></i> ล้างการเลือกทั้งหมด
+          </button>
+        </div>
+
+        <div class="relative mb-3">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+          <input 
+            type="text" 
+            id="otSearchInput" 
+            oninput="loadOtEmployees()"
+            placeholder="ค้นหารายชื่อจากรหัส หรือชื่อ-นามสกุล..." 
+            class="w-full pl-9 pr-3 py-1.5 rounded-lg text-xs bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-indigo-600"
+          >
+        </div>
+
+        <div class="flex-1 overflow-y-auto border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50/50 dark:bg-slate-950/50">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-100 dark:bg-slate-800 sticky top-0 text-slate-600 dark:text-slate-300">
+              <tr>
+                <th class="py-2 px-2 text-center w-8">
+                  <input type="checkbox" id="selectAllOt" onclick="toggleSelectAllOt(this)" class="rounded accent-indigo-600">
+                </th>
+                <th class="py-2 px-2 text-center w-12">แผนก</th>
+                <th class="py-2 px-2 w-16">รหัส</th>
+                <th class="py-2 px-2">ชื่อ - นามสกุล</th>
+                <th class="py-2 px-2 w-32">หน่วยงาน</th>
+              </tr>
+            </thead>
+            <tbody id="otEmployeeTableBody" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ฝั่งขวา: พนักงานที่ถูกเลือกแล้ว (รวมทุกหน่วยงาน ไม่หายไปไหน) -->
+      <div class="flex flex-col bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-xs h-[520px]">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+            <i class="fa-solid fa-user-check"></i> พนักงานที่ถูกเลือกทั้งหมด (พร้อมระบุหน้าที่)
+          </span>
+          <span class="text-xs bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 px-2.5 py-0.5 rounded-full font-medium">
+            รวม <span id="selectedOtCount">0</span> คน
+          </span>
+        </div>
+
+        <div class="flex-1 overflow-y-auto border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50/50 dark:bg-slate-950/50">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-100 dark:bg-slate-800 sticky top-0 text-slate-600 dark:text-slate-300">
+              <tr>
+                <th class="py-2 px-2 text-center w-8">#</th>
+                <th class="py-2 px-2 w-16">รหัส</th>
+                <th class="py-2 px-2">ชื่อ - นามสกุล</th>
+                <th class="py-2 px-2 w-44">หน้าที่การทำงาน</th>
+                <th class="py-2 px-2 w-20">หมายเหตุ</th>
+              </tr>
+            </thead>
+            <tbody id="otSelectedTableBody" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+
+  <!-- ========================================== -->
+  <!-- โครงสร้างพิมพ์ PDF: ใบเบิก OT (ซ่อนบนหน้าจอปกติ) -->
+  <!-- ========================================== -->
+  <div id="otPrintArea" class="print-container print-inactive" style="padding: 4mm 5mm; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif; color: #000; background: #fff; width: 100%;">
+    <div style="text-align: center; margin-bottom: 6px;">
+      <h3 style="font-size: 20px; font-weight: bold; margin: 0; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">บริษัท ไพโรจน์ (ทั่งซังฮะ) จำกัด สาขาบางปู</h3>
+      <h2 style="font-size: 24px; font-weight: bold; margin: 2px 0 0 0; letter-spacing: 0.5px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">ใบเบิกค่าทำงานล่วงเวลา</h2>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; font-size: 18px; margin-bottom: 4px; font-weight: bold; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">
+      <div>หน่วยงาน: <span id="printOtUnit" style="text-decoration: underline; font-weight: normal;">-</span></div>
+    </div>
+
+    <table class="print-table" style="width: 100%; border-collapse: collapse; border: 1.5px solid #000; font-size: 16px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif; table-layout: fixed;">
+      <colgroup>
+        <col style="width: 5%;">
+        <col style="width: 8%;">
+        <col style="width: 12%;">
+        <col style="width: 25%;">
+        <col style="width: 25%;">
+        <col style="width: 15%;">
+        <col style="width: 10%;">
+      </colgroup>
+      <thead>
+        <tr style="background-color: #f3f4f6;">
+          <th style="text-align: center; border: 1px solid #000; padding: 2px 4px; font-size: 17px;">ที่</th>
+          <th style="text-align: center; border: 1px solid #000; padding: 2px 4px; font-size: 17px;">แผนก</th>
+          <th style="text-align: center; border: 1px solid #000; padding: 2px 4px; font-size: 17px;">รหัส</th>
+          <th style="text-align: left; border: 1px solid #000; padding: 2px 4px; font-size: 17px;">ชื่อ-สกุล</th>
+          <th style="text-align: left; border: 1px solid #000; padding: 2px 4px; font-size: 17px;">งานที่ทำ</th>
+          <th style="text-align: center; border: 1px solid #000; padding: 2px 4px; font-size: 17px;">ลายเซ็นผู้ทำงานล่วงเวลา</th>
+          <th style="text-align: center; border: 1px solid #000; padding: 2px 4px; font-size: 17px;">หมายเหตุ</th>
+        </tr>
+      </thead>
+      <tbody id="otPrintTableBody"></tbody>
+    </table>
+
+    <div style="margin-top: 6px; font-size: 17px; display: flex; flex-direction: column; gap: 2px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">
+      <div>จำนวนพนักงานที่ทำงานล่วงเวลาทั้งหมด <span id="printOtCount" style="text-decoration: underline; font-weight: bold; padding: 0 6px;">0</span> คน</div>
+      <div style="display: flex; gap: 20px;">
+        <span>วันที่ <span id="printOtDate" style="text-decoration: underline; padding: 0 4px;">.../.../...</span></span>
+        <span>เริ่มเวลา <span id="printOtStartTime" style="text-decoration: underline; padding: 0 4px;">17:00</span> น. ถึงเวลา <span id="printOtEndTime" style="text-decoration: underline; padding: 0 4px;">21:00</span> น.</span>
+      </div>
+    </div>
+
+    <div style="margin-top: 15px; display: flex; justify-content: space-between; font-size: 17px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">
+      <div style="width: 40%; text-align: center;">
+        <p style="margin: 0 0 2px 0;">ผู้สั่งการ/อนุมัติ........................................................................</p>
+      </div>
+      <div style="width: 40%; text-align: center;">
+        <p style="margin: 0 0 2px 0;">หัวหน้าแผนก........................................................................</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- โครงสร้างพิมพ์ PDF: รายงานเงินช่วยงานศพ (ซ่อนบนหน้าจอปกติ) -->
+  <!-- ========================================== -->
+  <div id="funeralPrintArea" class="print-container print-inactive" style="padding: 4mm 5mm; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif; color: #000; background: #fff; width: 100%;">
+    <div style="text-align: center; margin-bottom: 6px;">
+      <h3 style="font-size: 20px; font-weight: bold; margin: 0; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">บริษัท ไพโรจน์ (ทั่งซังฮะ) จำกัด สาขาบางปู</h3>
+      <h2 style="font-size: 24px; font-weight: bold; margin: 2px 0 0 0; letter-spacing: 0.5px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">รายงานสรุปการเก็บเงินช่วยงานศพพนักงาน</h2>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; font-size: 18px; margin-bottom: 4px; font-weight: bold; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">
+      <div>หน่วยงาน / ไลน์ผลิต: <span id="printFuneralUnit" style="text-decoration: underline; font-weight: normal;">-</span></div>
+      <div>วันที่พิมพ์: <span id="printFuneralDate" style="text-decoration: underline; font-weight: normal;">-</span></div>
+    </div>
+
+    <table class="print-table" style="width: 100%; border-collapse: collapse; border: 1.5px solid #000; font-size: 16px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif; table-layout: fixed;">
+      <colgroup>
+        <col style="width: 8%;">
+        <col style="width: 12%;">
+        <col style="width: 18%;">
+        <col style="width: 34%;">
+        <col style="width: 15%;">
+        <col style="width: 18%;">
+      </colgroup>
+      <thead>
+        <tr style="background-color: #f3f4f6;">
+          <th style="text-align: center; border: 1px solid #000; padding: 2px 4px; font-size: 17px;">ที่</th>
+          <th style="text-align: center; border: 1px solid #000; padding: 2px 4px; font-size: 17px;">แผนก</th>
+          <th style="text-align: center; border: 1px solid #000; padding: 2px 4px; font-size: 17px;">รหัสพนักงาน</th>
+          <th style="text-align: left; border: 1px solid #000; padding: 2px 4px; font-size: 17px;">ชื่อ - นามสกุล</th>
+          <th style="text-align: center; border: 1px solid #000; padding: 2px 4px; font-size: 17px;">จำนวนเงิน (บาท)</th>
+          <th style="text-align: center; border: 1px solid #000; padding: 2px 4px; font-size: 17px;">ลายเซ็น</th>
+        </tr>
+      </thead>
+      <tbody id="funeralPrintTableBody"></tbody>
+    </table>
+
+    <div style="margin-top: 6px; font-size: 17px; display: flex; justify-content: space-between; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">
+      <div>รวมพนักงานทั้งสิ้น: <span id="printFuneralCount" style="text-decoration: underline; font-weight: bold; padding: 0 4px;">0</span> คน</div>
+      <div>รวมเป็นเงินทั้งสิ้น: <span id="printFuneralTotalAmount" style="text-decoration: underline; font-weight: bold; padding: 0 4px;">0.00</span> บาท</div>
+    </div>
+
+    <div style="margin-top: 15px; display: flex; justify-content: space-between; font-size: 17px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">
+      <div style="width: 40%; text-align: center;">
+        <p style="margin: 0 0 2px 0;">ผู้จัดเก็บเงิน........................................................................</p>
+      </div>
+      <div style="width: 40%; text-align: center;">
+        <p style="margin: 0 0 2px 0;">หัวหน้าแผนก........................................................................</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal สำหรับเลือกหน่วยงานพิมพ์รายงานเงินช่วยงานศพ -->
+  <div id="funeralModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-xs hidden no-print">
+    <div class="bg-white dark:bg-slate-900 rounded-xl w-full max-w-sm p-5 space-y-4 border border-slate-200 dark:border-slate-800 shadow-xl">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <h3 class="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+          <i class="fa-solid fa-hand-holding-dollar text-emerald-600"></i>
+          พิมพ์รายงานเงินช่วยค่างานศพ
+        </h3>
+        <button onclick="closeFuneralModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+          <i class="fa-solid fa-xmark text-base"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3">
+        <p class="text-xs text-slate-500 dark:text-slate-400">กรุณาเลือกหน่วยงาน / ไลน์ผลิต ที่ต้องการพิมพ์ออกรายงาน A4 หรือส่งออกเข้า Excel (CSV)</p>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">เลือกหน่วยงาน / ไลน์ผลิต</label>
+          <select id="funeralUnitSelect" class="w-full px-3 py-2 rounded-lg text-xs font-light bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-emerald-600">
+            <option value="ALL">ทุกหน่วยงาน / ไลน์ผลิต</option>
+            <option value="หน่วยงานเสริม">หน่วยงานเสริม</option>
+            <option value="ไลน์ผลิต F.01">ไลน์ผลิต F.01</option>
+            <option value="ไลน์ผลิต F.02">ไลน์ผลิต F.02</option>
+            <option value="ไลน์ผลิต F.03">ไลน์ผลิต F.03</option>
+            <option value="ไลน์ผลิต F.04">ไลน์ผลิต F.04</option>
+            <option value="หน่วยงาน รถโฟล์คลิฟท์">หน่วยงาน รถโฟล์คลิฟท์</option>
+            <option value="หน่วยงาน LAB">หน่วยงาน LAB</option>
+            <option value="หน่วยงาน ช่าง">หน่วยงาน ช่าง</option>
+            <option value="หน่วยงาน รอบนอก">หน่วยงาน รอบนอก</option>
+            <option value="หน่วยงาน ผงปรุงรส">หน่วยงาน ผงปรุงรส</option>
+            <option value="หน่วยงาน น้ำปลาพริกซอง">หน่วยงาน น้ำปลาพริกซอง</option>
+            <option value="หน่วยงาน น้ำส้ม">หน่วยงาน น้ำส้ม</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+        <button onclick="printFuneralA4()" class="px-3.5 py-1.5 rounded-lg text-xs font-medium bg-slate-700 hover:bg-slate-800 text-white transition-colors flex items-center gap-1.5">
+          <i class="fa-solid fa-print"></i> พิมพ์ A4 (PDF)
+        </button>
+        <button onclick="confirmExportFuneralCSV()" class="px-3.5 py-1.5 rounded-lg text-xs font-medium bg-emerald-600 hover:bg-emerald-700 text-white transition-colors flex items-center gap-1.5">
+          <i class="fa-solid fa-file-excel"></i> ส่งออก Excel
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal พนักงาน (เพิ่ม/แก้ไข) -->
+  <div id="empModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-xs hidden opacity-0 transition-opacity duration-150 no-print">
+    <div class="bg-white dark:bg-slate-900 rounded-xl w-full max-w-md p-5 space-y-4 border border-slate-200 dark:border-slate-800 relative shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <h3 id="modalTitle" class="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+          <i class="fa-solid fa-user-pen text-sky-600 dark:text-sky-400"></i>
+          เพิ่มพนักงานใหม่
+        </h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+          <i class="fa-solid fa-xmark text-base"></i>
+        </button>
+      </div>
+
+      <form id="empForm" onsubmit="saveEmployee(event)" class="space-y-3">
+        <input type="hidden" id="empIdInput">
+        <div>
+          <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">แผนก <span class="text-rose-500">*</span></label>
+          <select id="deptCodeInput" required class="w-full px-3 py-2 rounded-lg text-xs font-light bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-sky-600">
+            <option value="">-- เลือกแผนก --</option>
+            <option value="02">02</option>
+            <option value="03">03</option>
+            <option value="05">05</option>
+            <option value="07">07</option>
+            <option value="23">23</option>
+            <option value="25">25</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">รหัสพนักงาน <span class="text-rose-500">*</span></label>
+          <input type="text" id="empCodeInput" required placeholder="เช่น 520, 0592" class="w-full px-3 py-2 rounded-lg text-xs font-light bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-sky-600">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">ชื่อ - นามสกุล <span class="text-rose-500">*</span></label>
+          <input type="text" id="nameInput" required placeholder="เช่น นาย สมชาย ใจดี" class="w-full px-3 py-2 rounded-lg text-xs font-light bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-sky-600">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">หน่วยงาน / ไลน์ผลิต <span class="text-rose-500">*</span></label>
+          <select id="unitInput" required class="w-full px-3 py-2 rounded-lg text-xs font-light bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-sky-600">
+            <option value="">-- เลือกหน่วยงาน / ไลน์ผลิต --</option>
+            <option value="หน่วยงานเสริม">หน่วยงานเสริม</option>
+            <option value="ไลน์ผลิต F.01">ไลน์ผลิต F.01</option>
+            <option value="ไลน์ผลิต F.02">ไลน์ผลิต F.02</option>
+            <option value="ไลน์ผลิต F.03">ไลน์ผลิต F.03</option>
+            <option value="ไลน์ผลิต F.04">ไลน์ผลิต F.04</option>
+            <option value="หน่วยงาน รถโฟล์คลิฟท์">หน่วยงาน รถโฟล์คลิฟท์</option>
+            <option value="หน่วยงาน LAB">หน่วยงาน LAB</option>
+            <option value="หน่วยงาน ช่าง">หน่วยงาน ช่าง</option>
+            <option value="หน่วยงาน รอบนอก">หน่วยงาน รอบนอก</option>
+            <option value="หน่วยงาน ผงปรุงรส">หน่วยงาน ผงปรุงรส</option>
+            <option value="หน่วยงาน น้ำปลาพริกซอง">หน่วยงาน น้ำปลาพริกซอง</option>
+            <option value="หน่วยงาน น้ำส้ม">หน่วยงาน น้ำส้ม</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">สถานะการทำงาน</label>
+          <select id="statusInput" class="w-full px-3 py-2 rounded-lg text-xs font-light bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-sky-600">
+            <option value="Active">ปฏิบัติงานปกติ (Active)</option>
+            <option value="Inactive">พ้นสภาพ / พักงาน (Inactive)</option>
+          </select>
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+          <button type="button" onclick="closeModal()" class="px-3.5 py-1.5 rounded-lg text-xs font-light text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">ยกเลิก</button>
+          <button type="submit" class="px-4 py-1.5 rounded-lg text-xs font-medium bg-sky-700 hover:bg-sky-800 text-white">บันทึกข้อมูล</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- JavaScript Logics -->
+  <script>
+    const INITIAL_EMPLOYEES = [{"id": 1, "deptCode": "02", "empCode": "520", "name": "นาง วัลยา วงศ์อุษณีย์อมร", "unit": "หน่วยงานเสริม", "status": "Active"}, {"id": 2, "deptCode": "02", "empCode": "490", "name": "นาง สุรีรัตน์ พูลสวัสดิ์", "unit": "หน่วยงานเสริม", "status": "Active"}, {"id": 3, "deptCode": "02", "empCode": "550", "name": "นาง รัชณีกร ท้วมอ่อนมาก", "unit": "หน่วยงานเสริม", "status": "Active"}, {"id": 4, "deptCode": "02", "empCode": "528", "name": "นาง สุกัญญา คำหล้า", "unit": "หน่วยงานเสริม", "status": "Active"}, {"id": 5, "deptCode": "02", "empCode": "0592", "name": "นาย พณา ขำเชย", "unit": "หน่วยงานเสริม", "status": "Active"}, {"id": 6, "deptCode": "02", "empCode": "0603", "name": "นาย พงศกร เรืองศรี", "unit": "หน่วยงานเสริม", "status": "Active"}, {"id": 7, "deptCode": "02", "empCode": "552", "name": "นาง วิชญาดา แทนไทย", "unit": "หน่วยงานเสริม", "status": "Active"}, {"id": 8, "deptCode": "02", "empCode": "241", "name": "นาง สมคิด เพ็ชรจรูญ", "unit": "ไลน์ผลิต F.01", "status": "Active"}, {"id": 9, "deptCode": "02", "empCode": "302", "name": "นาง สมใจ ปานทอง", "unit": "ไลน์ผลิต F.01", "status": "Active"}, {"id": 10, "deptCode": "02", "empCode": "349", "name": "นาง พรนิภา เอี๊ยะชื่น", "unit": "ไลน์ผลิต F.01", "status": "Active"}, {"id": 11, "deptCode": "02", "empCode": "351", "name": "นาง กันทิมา บุญเกิด", "unit": "ไลน์ผลิต F.01", "status": "Active"}, {"id": 12, "deptCode": "02", "empCode": "355", "name": "นาง วราภรณ์ สุขเกษม", "unit": "ไลน์ผลิต F.01", "status": "Active"}, {"id": 13, "deptCode": "02", "empCode": "406", "name": "นาง รัศมี ปลื้มจิตร", "unit": "ไลน์ผลิต F.01", "status": "Active"}, {"id": 14, "deptCode": "02", "empCode": "424", "name": "นาง ชุติมา สุขขี", "unit": "ไลน์ผลิต F.01", "status": "Active"}, {"id": 15, "deptCode": "02", "empCode": "452", "name": "นาง กรรณิการ์ บัวเฟื่อง", "unit": "ไลน์ผลิต F.01", "status": "Active"}, {"id": 16, "deptCode": "02", "empCode": "467", "name": "นาง หนึ่งฤทัย ส่งศรี", "unit": "ไลน์ผลิต F.01", "status": "Active"}, {"id": 17, "deptCode": "02", "empCode": "473", "name": "นาง อมรรัตน์ บุญธรรม", "unit": "ไลน์ผลิต F.01", "status": "Active"}, {"id": 18, "deptCode": "02", "empCode": "489", "name": "นาง วิมลพร เนาว์ลักษ์", "unit": "ไลน์ผลิต F.01", "status": "Active"}, {"id": 19, "deptCode": "02", "empCode": "527", "name": "นาง มาริสา ม่วงสิงห์", "unit": "ไลน์ผลิต F.01", "status": "Active"}, {"id": 20, "deptCode": "02", "empCode": "531", "name": "นางสาว น้ำมนต์ สุขเกษม", "unit": "ไลน์ผลิต F.01", "status": "Active"}, {"id": 21, "deptCode": "02", "empCode": "537", "name": "นาง ดวงกมล เนาว์ลักษ์", "unit": "ไลน์ผลิต F.01", "status": "Active"}, {"id": 22, "deptCode": "02", "empCode": "548", "name": "นาง วรรณา พระกองดี", "unit": "ไลน์ผลิต F.01", "status": "Active"}, {"id": 23, "deptCode": "02", "empCode": "0481", "name": "นาย ณรงค์ มิตรทอง", "unit": "ไลน์ผลิต F.01", "status": "Active"}, {"id": 24, "deptCode": "02", "empCode": "0596", "name": "นาย จักรกฤช อินน้ำลึม", "unit": "ไลน์ผลิต F.01", "status": "Active"}, {"id": 25, "deptCode": "02", "empCode": "0548", "name": "นพพล ฮวดใช้", "unit": "หน่วยงาน รถโฟล์คลิฟท์", "status": "Active"}, {"id": 26, "deptCode": "02", "empCode": "0610", "name": "ธนกฤษณ์ เจริญสุข", "unit": "หน่วยงาน รถโฟล์คลิฟท์", "status": "Active"}, {"id": 27, "deptCode": "02", "empCode": "0611", "name": "ธนชัย นามเสถียร", "unit": "หน่วยงาน รถโฟล์คลิฟท์", "status": "Active"}, {"id": 28, "deptCode": "02", "empCode": "0613", "name": "ปิยะพงษ์ สุเมธ", "unit": "หน่วยงาน รถโฟล์คลิฟท์", "status": "Active"}, {"id": 29, "deptCode": "02", "empCode": "532", "name": "นางสาวนาถปรีดา โต๊ะนาค", "unit": "หน่วยงาน LAB", "status": "Active"}, {"id": 30, "deptCode": "02", "empCode": "553", "name": "นางสาวสุวรรณา ขุนจำนงค์", "unit": "หน่วยงาน LAB", "status": "Active"}, {"id": 31, "deptCode": "02", "empCode": "568", "name": "สาธิต พุ่มสุข", "unit": "ไลน์ผลิต F.03", "status": "Active"}, {"id": 32, "deptCode": "02", "empCode": "0621", "name": "นฤพนธ์ ปรีหะจินดา", "unit": "ไลน์ผลิต F.03", "status": "Active"}, {"id": 33, "deptCode": "02", "empCode": "304", "name": "ปรานอม นรินทรางกูล ณ อยุธยา", "unit": "ไลน์ผลิต F.03", "status": "Active"}, {"id": 34, "deptCode": "02", "empCode": "534", "name": "จริยา สมหวัง", "unit": "ไลน์ผลิต F.03", "status": "Active"}, {"id": 35, "deptCode": "02", "empCode": "516", "name": "บุษบา ชูคงพะเนา", "unit": "ไลน์ผลิต F.03", "status": "Active"}, {"id": 36, "deptCode": "02", "empCode": "501", "name": "ณัฐธิดา สิงห์นารายณ์", "unit": "ไลน์ผลิต F.03", "status": "Active"}, {"id": 37, "deptCode": "02", "empCode": "533", "name": "วนิดา ชัยวังราช", "unit": "ไลน์ผลิต F.03", "status": "Active"}, {"id": 38, "deptCode": "02", "empCode": "168", "name": "มาเรียม สมพงษ์", "unit": "หน่วยงาน ช่าง", "status": "Active"}, {"id": 39, "deptCode": "02", "empCode": "171", "name": "สุภาพ เทียนยิ้ม", "unit": "หน่วยงาน ช่าง", "status": "Active"}, {"id": 40, "deptCode": "02", "empCode": "194", "name": "หนูน้อย รักสอน", "unit": "หน่วยงาน ช่าง", "status": "Active"}, {"id": 41, "deptCode": "02", "empCode": "205", "name": "พิมพ์รภัช ฐิติกุลธัญภัช", "unit": "หน่วยงาน ช่าง", "status": "Active"}, {"id": 42, "deptCode": "02", "empCode": "208", "name": "พเยาว์ แย้มเพียร", "unit": "หน่วยงาน ช่าง", "status": "Active"}, {"id": 43, "deptCode": "02", "empCode": "256", "name": "กัญญาภา เจียมอยู่", "unit": "หน่วยงาน ช่าง", "status": "Active"}, {"id": 44, "deptCode": "02", "empCode": "388", "name": "จิราพร ขันแก้ว", "unit": "หน่วยงาน ช่าง", "status": "Active"}, {"id": 45, "deptCode": "02", "empCode": "389", "name": "หนึ่งฤทัย ฉิมสุข", "unit": "หน่วยงาน ช่าง", "status": "Active"}, {"id": 46, "deptCode": "02", "empCode": "403", "name": "พรทิพย์ จันทวิสา", "unit": "หน่วยงาน ช่าง", "status": "Active"}, {"id": 47, "deptCode": "02", "empCode": "471", "name": "ยุวรินธร วรรณสำเริง", "unit": "หน่วยงาน ช่าง", "status": "Active"}, {"id": 48, "deptCode": "02", "empCode": "473", "name": "ดิษยารินทร์ ชินธนาโชติรัตน์", "unit": "หน่วยงาน ช่าง", "status": "Active"}, {"id": 49, "deptCode": "07", "empCode": "32", "name": "สุดใจ ธรรมสัตย์", "unit": "หน่วยงาน รอบนอก", "status": "Active"}, {"id": 50, "deptCode": "03", "empCode": "0128", "name": "อรรถพล พุฒทองใบ", "unit": "หน่วยงาน รอบนอก", "status": "Active"}, {"id": 51, "deptCode": "02", "empCode": "0458", "name": "ประสิทธิ์ จีนโภชนา", "unit": "หน่วยงาน รอบนอก", "status": "Active"}, {"id": 52, "deptCode": "05", "empCode": "037", "name": "นิภัทธ์ จันทร์มี", "unit": "หน่วยงาน รอบนอก", "status": "Active"}, {"id": 53, "deptCode": "25", "empCode": "2", "name": "เอกชัย นาคจู", "unit": "หน่วยงาน ผงปรุงรส", "status": "Active"}, {"id": 54, "deptCode": "25", "empCode": "003", "name": "พัฒนพล มากมี", "unit": "หน่วยงาน ผงปรุงรส", "status": "Active"}, {"id": 55, "deptCode": "25", "empCode": "055", "name": "ดวงหทัย คงจันทร์", "unit": "หน่วยงาน ผงปรุงรส", "status": "Active"}, {"id": 56, "deptCode": "25", "empCode": "084", "name": "รัชนู ทับทิมทอง", "unit": "หน่วยงาน ผงปรุงรส", "status": "Active"}, {"id": 57, "deptCode": "25", "empCode": "066", "name": "อัญชลี เครือมณี", "unit": "หน่วยงาน ผงปรุงรส", "status": "Active"}, {"id": 58, "deptCode": "25", "empCode": "078", "name": "ดวงใจ พรมจิตต์", "unit": "หน่วยงาน ผงปรุงรส", "status": "Active"}, {"id": 59, "deptCode": "25", "empCode": "099", "name": "ศิริวรรณ โคตรมุงคูล", "unit": "หน่วยงาน ผงปรุงรส", "status": "Active"}, {"id": 60, "deptCode": "25", "empCode": "100", "name": "สุวรรณณี ลิโกล", "unit": "หน่วยงาน ผงปรุงรส", "status": "Active"}, {"id": 61, "deptCode": "25", "empCode": "102", "name": "ศิริวรรณ แถวทัพ", "unit": "หน่วยงาน ผงปรุงรส", "status": "Active"}, {"id": 62, "deptCode": "02", "empCode": "618", "name": "นายเอกชัย เนาวลักษณ์", "unit": "ไลน์ผลิต F.02", "status": "Active"}, {"id": 63, "deptCode": "02", "empCode": "604", "name": "นายพงษ์ศักดิ์ แสงทอง", "unit": "ไลน์ผลิต F.02", "status": "Active"}, {"id": 64, "deptCode": "02", "empCode": "612", "name": "นายธนากร สุขเจริญ", "unit": "ไลน์ผลิต F.02", "status": "Active"}, {"id": 65, "deptCode": "02", "empCode": "444", "name": "นายพยัพ รอดจริง", "unit": "ไลน์ผลิต F.02", "status": "Active"}, {"id": 66, "deptCode": "02", "empCode": "433", "name": "นางณัฐพร จรูญพร", "unit": "ไลน์ผลิต F.02", "status": "Active"}, {"id": 67, "deptCode": "02", "empCode": "383", "name": "นางธีรารัตน์ บานชื่น", "unit": "ไลน์ผลิต F.02", "status": "Active"}, {"id": 68, "deptCode": "02", "empCode": "555", "name": "นางสาวกัลยา อินทรา", "unit": "ไลน์ผลิต F.02", "status": "Active"}, {"id": 69, "deptCode": "02", "empCode": "538", "name": "นางเพ็ญนภา เมืองประสิทธิ์", "unit": "ไลน์ผลิต F.02", "status": "Active"}, {"id": 70, "deptCode": "02", "empCode": "537", "name": "นางมลฤดี เจริญสุข", "unit": "ไลน์ผลิต F.02", "status": "Active"}, {"id": 71, "deptCode": "02", "empCode": "487", "name": "นางกุลธิดา ขาวผ่อง", "unit": "ไลน์ผลิต F.02", "status": "Active"}, {"id": 72, "deptCode": "02", "empCode": "507", "name": "นางสุดารัตน์ รอดเย็น", "unit": "ไลน์ผลิต F.02", "status": "Active"}, {"id": 73, "deptCode": "02", "empCode": "512", "name": "นางรุ่งนภา เรือนงาม", "unit": "ไลน์ผลิต F.02", "status": "Active"}, {"id": 74, "deptCode": "02", "empCode": "516", "name": "นางชลดา เทียนยิ้ม", "unit": "ไลน์ผลิต F.02", "status": "Active"}, {"id": 75, "deptCode": "02", "empCode": "509", "name": "นางสาวศศิตา เพ็ชรจรูญ", "unit": "ไลน์ผลิต F.02", "status": "Active"}, {"id": 76, "deptCode": "02", "empCode": "439", "name": "นางฤติมา โพธิ์ทอง", "unit": "ไลน์ผลิต F.02", "status": "Active"}, {"id": 77, "deptCode": "05", "empCode": "551", "name": "นางวนิดา วรขัตร", "unit": "ไลน์ผลิต F.02", "status": "Active"}, {"id": 78, "deptCode": "02", "empCode": "491", "name": "ภิรัลญา สิทธิอักษร", "unit": "หน่วยงาน น้ำปลาพริกซอง", "status": "Active"}, {"id": 79, "deptCode": "02", "empCode": "492", "name": "นิภาพร เขียวชอ่ำ", "unit": "หน่วยงาน น้ำปลาพริกซอง", "status": "Active"}, {"id": 80, "deptCode": "02", "empCode": "494", "name": "ธิดารัตน์ อยู่สุข", "unit": "หน่วยงาน น้ำปลาพริกซอง", "status": "Active"}, {"id": 81, "deptCode": "02", "empCode": "499", "name": "พรรณพร โตสงวน", "unit": "หน่วยงาน น้ำปลาพริกซอง", "status": "Active"}, {"id": 82, "deptCode": "02", "empCode": "510", "name": "พรชนก รวงผึ้ง", "unit": "หน่วยงาน น้ำปลาพริกซอง", "status": "Active"}, {"id": 83, "deptCode": "02", "empCode": "541", "name": "รัตติกาล เกษมสุข", "unit": "หน่วยงาน น้ำปลาพริกซอง", "status": "Active"}, {"id": 84, "deptCode": "02", "empCode": "556", "name": "วิลาวัลย์ รวงผึ้ง", "unit": "หน่วยงาน น้ำปลาพริกซอง", "status": "Active"}, {"id": 85, "deptCode": "02", "empCode": "505", "name": "รัชนก ยอดอ่อน", "unit": "หน่วยงาน น้ำปลาพริกซอง", "status": "Active"}, {"id": 86, "deptCode": "23", "empCode": "32", "name": "พจนา ตรีนพ", "unit": "หน่วยงาน น้ำส้ม", "status": "Active"}, {"id": 87, "deptCode": "23", "empCode": "44", "name": "พิราพร อยู่สุข", "unit": "หน่วยงาน น้ำส้ม", "status": "Active"}, {"id": 88, "deptCode": "23", "empCode": "45", "name": "อักษิพร สุวรรณ์นาค", "unit": "หน่วยงาน น้ำส้ม", "status": "Active"}, {"id": 89, "deptCode": "23", "empCode": "48", "name": "เบญจวรรณ แย้มเพียร", "unit": "หน่วยงาน น้ำส้ม", "status": "Active"}, {"id": 90, "deptCode": "02", "empCode": "372", "name": "นางสาวมาลี น้อยนิวรณ์", "unit": "ไลน์ผลิต F.04", "status": "Active"}, {"id": 91, "deptCode": "02", "empCode": "240", "name": "นางสาววันเพ็ญ บุตรสุข", "unit": "ไลน์ผลิต F.04", "status": "Active"}, {"id": 92, "deptCode": "02", "empCode": "322", "name": "นางสาวมาลี สมพงษ์", "unit": "ไลน์ผลิต F.04", "status": "Active"}, {"id": 93, "deptCode": "02", "empCode": "430", "name": "นางลัดดา พุฒทองใบ", "unit": "ไลน์ผลิต F.04", "status": "Active"}, {"id": 94, "deptCode": "02", "empCode": "432", "name": "นางสาวอนุชรา เบ็ญกูล", "unit": "ไลน์ผลิต F.04", "status": "Active"}, {"id": 95, "deptCode": "02", "empCode": "479", "name": "นางสาวสุกัญญา โทกุล", "unit": "ไลน์ผลิต F.04", "status": "Active"}, {"id": 96, "deptCode": "02", "empCode": "535", "name": "นางสาวสมฤทัย เทียนยิ้ม", "unit": "ไลน์ผลิต F.04", "status": "Active"}, {"id": 97, "deptCode": "02", "empCode": "546", "name": "นางสาวอริสา กางหอม", "unit": "ไลน์ผลิต F.04", "status": "Active"}, {"id": 98, "deptCode": "02", "empCode": "557", "name": "นางสาวอักษิกา หงส์คำ", "unit": "ไลน์ผลิต F.04", "status": "Active"}, {"id": 99, "deptCode": "02", "empCode": "468", "name": "นายสมบัติ ทุมสงคราม", "unit": "ไลน์ผลิต F.04", "status": "Active"}, {"id": 100, "deptCode": "02", "empCode": "560", "name": "นายกิตติศักด์ นุชคง", "unit": "ไลน์ผลิต F.04", "status": "Active"}, {"id": 101, "deptCode": "02", "empCode": "625", "name": "นายเกรียรติกุล สะศรี", "unit": "ไลน์ผลิต F.04", "status": "Active"}];
+
+    let employees = JSON.parse(localStorage.getItem('tiparos_employees_v3')) || INITIAL_EMPLOYEES;
+    let filteredData = [...employees];
+    let currentPage = 1;
+    const pageSize = 15;
+    let chartInstance = null;
+    let otSelectionState = {};
+
+    /* ========================================== */
+    /* ฟังก์ชันสลับหน้าแอปพลิเคชัน (Tab Navigation) */
+    /* ========================================== */
+    function switchPage(pageName) {
+      const pageEmployee = document.getElementById('pageEmployee');
+      const pageOt = document.getElementById('pageOt');
+      const tabBtnEmployee = document.getElementById('tabBtnEmployee');
+      const tabBtnOt = document.getElementById('tabBtnOt');
+      const mobileBtnEmp = document.getElementById('mobileTabBtnEmployee');
+      const mobileBtnOt = document.getElementById('mobileTabBtnOt');
+
+      if (pageName === 'employee') {
+        pageEmployee.classList.remove('hidden');
+        pageOt.classList.add('hidden');
+        
+        tabBtnEmployee.className = "px-3 py-1.5 rounded-md text-xs font-medium bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs transition-all";
+        tabBtnOt.className = "px-3 py-1.5 rounded-md text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all";
+        
+        mobileBtnEmp.className = "flex-1 py-2 rounded-lg text-xs font-medium bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 text-center";
+        mobileBtnOt.className = "flex-1 py-2 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 text-center";
+      } else if (pageName === 'ot') {
+        pageEmployee.classList.add('hidden');
+        pageOt.classList.remove('hidden');
+
+        tabBtnOt.className = "px-3 py-1.5 rounded-md text-xs font-medium bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs transition-all";
+        tabBtnEmployee.className = "px-3 py-1.5 rounded-md text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all";
+
+        mobileBtnOt.className = "flex-1 py-2 rounded-lg text-xs font-medium bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 text-center";
+        mobileBtnEmp.className = "flex-1 py-2 rounded-lg text-xs font-medium bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 text-center";
+
+        initOtPageData();
+      }
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('employeeTableBody');
+      tbody.innerHTML = '';
+
+      const startIndex = (currentPage - 1) * pageSize;
+      const paginatedData = filteredData.slice(startIndex, startIndex + pageSize);
+
+      paginatedData.forEach((emp, index) => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors";
+        tr.innerHTML = `
+          <td class="py-2.5 px-4 text-center text-slate-400 font-light">${startIndex + index + 1}</td>
+          <td class="py-2.5 px-4 text-center font-medium text-slate-900 dark:text-white">${emp.deptCode}</td>
+          <td class="py-2.5 px-4 font-mono text-slate-700 dark:text-slate-300">${emp.empCode}</td>
+          <td class="py-2.5 px-4 font-normal text-slate-900 dark:text-white">${emp.name}</td>
+          <td class="py-2.5 px-4 text-slate-600 dark:text-slate-400">${emp.unit}</td>
+          <td class="py-2.5 px-4 text-center">
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${emp.status === 'Active' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'}">
+              ${emp.status === 'Active' ? 'ปกติ' : 'พักงาน'}
+            </span>
+          </td>
+          <td class="py-2.5 px-4 text-center">
+            <div class="flex items-center justify-center gap-2">
+              <button onclick="openModal('edit', ${emp.id})" class="text-sky-600 dark:text-sky-400 hover:text-sky-800 transition-colors" title="แก้ไขข้อมูล">
+                <i class="fa-regular fa-pen-to-square"></i>
+              </button>
+              <button onclick="deleteEmployee(${emp.id})" class="text-rose-500 hover:text-rose-700 transition-colors" title="ลบข้อมูล">
+                <i class="fa-regular fa-trash-can"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('showingCount').textContent = filteredData.length;
+      updateStats();
+      renderPagination();
+      renderChart();
+    }
+
+    function updateStats() {
+      document.getElementById('statTotal').textContent = employees.length;
+      const depts = new Set(employees.map(e => e.deptCode));
+      document.getElementById('statDepts').textContent = depts.size;
+      const units = new Set(employees.map(e => e.unit));
+      document.getElementById('statUnits').textContent = units.size;
+      const active = employees.filter(e => e.status === 'Active');
+      document.getElementById('statActive').textContent = active.length;
+    }
+
+    function handleFilter() {
+      const deptVal = document.getElementById('deptFilter').value;
+      const unitVal = document.getElementById('unitFilter').value;
+
+      filteredData = employees.filter(emp => {
+        const matchDept = (deptVal === 'ALL') || (emp.deptCode === deptVal);
+        const matchUnit = (unitVal === 'ALL') || (emp.unit === unitVal);
+        return matchDept && matchUnit;
+      });
+
+      currentPage = 1;
+      renderTable();
+    }
+
+    function handleSearch() {
+      const q = document.getElementById('searchInput').value.toLowerCase().trim();
+      filteredData = employees.filter(emp => 
+        emp.name.toLowerCase().includes(q) || 
+        emp.empCode.toLowerCase().includes(q) || 
+        emp.deptCode.toLowerCase().includes(q)
+      );
+      currentPage = 1;
+      renderTable();
+    }
+
+    function renderPagination() {
+      const totalPages = Math.ceil(filteredData.length / pageSize) || 1;
+      const controls = document.getElementById('paginationControls');
+      controls.innerHTML = '';
+
+      const prevBtn = document.createElement('button');
+      prevBtn.className = `px-2 py-1 rounded border border-slate-200 dark:border-slate-800 ${currentPage === 1 ? 'opacity-40 cursor-not-allowed' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}`;
+      prevBtn.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
+      prevBtn.disabled = currentPage === 1;
+      prevBtn.onclick = () => { currentPage--; renderTable(); };
+
+      const nextBtn = document.createElement('button');
+      nextBtn.className = `px-2 py-1 rounded border border-slate-200 dark:border-slate-800 ${currentPage === totalPages ? 'opacity-40 cursor-not-allowed' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}`;
+      nextBtn.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+      nextBtn.disabled = currentPage === totalPages;
+      nextBtn.onclick = () => { currentPage++; renderTable(); };
+
+      controls.appendChild(prevBtn);
+      const span = document.createElement('span');
+      span.className = "px-2";
+      span.textContent = `${currentPage} / ${totalPages}`;
+      controls.appendChild(span);
+      controls.appendChild(nextBtn);
+    }
+
+    function renderChart() {
+      const unitCounts = {};
+      employees.forEach(emp => {
+        unitCounts[emp.unit] = (unitCounts[emp.unit] || 0) + 1;
+      });
+
+      const categories = Object.keys(unitCounts);
+      const seriesData = Object.values(unitCounts);
+      const isDark = document.documentElement.classList.contains('dark');
+
+      const options = {
+        series: [{ name: 'จำนวนพนักงาน', data: seriesData }],
+        chart: { 
+          type: 'bar', 
+          height: 320, 
+          toolbar: { show: false },
+          fontFamily: 'Sarabun, sans-serif'
+        },
+        plotOptions: { 
+          bar: { 
+            borderRadius: 5, 
+            horizontal: false, 
+            columnWidth: '50%',
+            dataLabels: { position: 'top' }
+          } 
+        },
+        dataLabels: { 
+          enabled: true,
+          offsetY: -22,
+          style: { fontSize: '13px', fontWeight: 'bold', colors: [isDark ? '#38bdf8' : '#0284c7'] }
+        },
+        xaxis: { 
+          categories: categories, 
+          labels: { 
+            rotate: -45,
+            rotateAlways: true,
+            style: { fontSize: '12px', fontWeight: 500, colors: isDark ? '#cbd5e1' : '#475569' } 
+          },
+          axisBorder: { show: false },
+          axisTicks: { show: false }
+        },
+        yaxis: {
+          labels: { style: { fontSize: '12px', fontWeight: 500, colors: isDark ? '#94a3b8' : '#64748b' } }
+        },
+        grid: { borderColor: isDark ? '#1e293b' : '#f1f5f9', strokeDashArray: 4 },
+        colors: ['#0284c7'],
+        tooltip: { theme: isDark ? 'dark' : 'light', style: { fontSize: '13px', fontFamily: 'Sarabun, sans-serif' } }
+      };
+
+      if (chartInstance) chartInstance.destroy();
+      chartInstance = new ApexCharts(document.querySelector("#chartUnits"), options);
+      chartInstance.render();
+    }
+
+    /* ========================================== */
+    /* ฟังก์ชันระบบ OT (หน้าแยก) */
+    /* ========================================== */
+    function initOtPageData() {
+      if (Object.keys(otSelectionState).length === 0) {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('otDateInput').value = today;
+        document.getElementById('otSearchInput').value = '';
+        document.getElementById('otUnitSelect').value = 'ALL';
+        document.getElementById('otCustomUnitInput').value = '';
+
+        const targetEmployees = employees.filter(e => e.status === 'Active');
+        targetEmployees.forEach(emp => {
+          otSelectionState[emp.id] = { checked: false, job: 'ปฏิบัติงานไลน์ผลิตตามA/C', note: '' };
+        });
+      }
+      loadOtEmployees();
+    }
+
+    const jobOptionsList = [
+      "ปฏิบัติงานไลน์ผลิตตามA/C",
+      "ดูวันที่ผลิต",
+      "เตรียมกล่อง",
+      "เตรียมขวด",
+      "ยกเรียงพาเลท",
+      "ยกขวดบรรจุใส่กล่อง",
+      "ป้อนขวดบนสายพาน",
+      "ดูสิ่งแปลกปลอมผ่านไฟ",
+      "ดูน้ำปลาไม่เต็มกล่อง",
+      "ติดสติ๊กเกอร์สินค้า",
+      "ปะฉลากสินค้า"
+    ];
+
+    function saveCurrentOtRowStates() {
+      const rows = document.querySelectorAll('#otSelectedTableBody tr');
+      rows.forEach(tr => {
+        const empId = Number(tr.getAttribute('data-emp-id'));
+        if (empId && otSelectionState[empId]) {
+          const job = tr.querySelector('.ot-job').value;
+          const note = tr.querySelector('.ot-note').value;
+          otSelectionState[empId].job = job;
+          otSelectionState[empId].note = note;
+        }
+      });
+    }
+
+    function loadOtEmployees() {
+      saveCurrentOtRowStates();
+
+      const unitVal = document.getElementById('otUnitSelect').value;
+      const searchQuery = document.getElementById('otSearchInput').value.toLowerCase().trim();
+      
+      const leftTbody = document.getElementById('otEmployeeTableBody');
+      const rightTbody = document.getElementById('otSelectedTableBody');
+      leftTbody.innerHTML = '';
+      rightTbody.innerHTML = '';
+
+      // 1. เรนเดอร์ฝั่งซ้าย (ตามตัวกรองหน่วยงานหรือค้นหา)
+      let targetEmployees = (unitVal === 'ALL') 
+        ? employees.filter(e => e.status === 'Active') 
+        : employees.filter(e => e.unit === unitVal && e.status === 'Active');
+
+      if (searchQuery) {
+        targetEmployees = targetEmployees.filter(e => 
+          e.empCode.toLowerCase().includes(searchQuery) || 
+          e.name.toLowerCase().includes(searchQuery)
+        );
+      }
+
+      targetEmployees.forEach((emp) => {
+        if (!otSelectionState[emp.id]) {
+          otSelectionState[emp.id] = { checked: false, job: 'ปฏิบัติงานไลน์ผลิตตามA/C', note: '' };
+        }
+        const state = otSelectionState[emp.id];
+
+        const leftTr = document.createElement('tr');
+        leftTr.className = "hover:bg-slate-100 dark:hover:bg-slate-800/40";
+        leftTr.innerHTML = `
+          <td class="py-2 px-2 text-center">
+            <input type="checkbox" value="${emp.id}" ${state.checked ? 'checked' : ''} class="ot-checkbox rounded accent-indigo-600" onchange="syncOtSelection(${emp.id}, this)">
+          </td>
+          <td class="py-2 px-2 text-center font-medium">${emp.deptCode}</td>
+          <td class="py-2 px-2 font-mono">${emp.empCode}</td>
+          <td class="py-2 px-2">${emp.name}</td>
+          <td class="py-2 px-2 text-slate-500 truncate max-w-[100px]">${emp.unit}</td>
+        `;
+        leftTbody.appendChild(leftTr);
+      });
+
+      // 2. เรนเดอร์ฝั่งขวา (แสดงพนักงานที่ถูกติ๊กเลือก "ทั้งหมด" ทุกหน่วยงานโดยไม่โดนตัวกรองฝั่งซ้ายตัดทิ้ง)
+      let selectedEmployees = employees.filter(emp => otSelectionState[emp.id] && otSelectionState[emp.id].checked);
+      
+      selectedEmployees.forEach((emp, index) => {
+        const state = otSelectionState[emp.id];
+        let jobOptionsHtml = jobOptionsList.map(job => 
+          `<option value="${job}" ${job === state.job ? 'selected' : ''}>${job}</option>`
+        ).join('');
+
+        const rightTr = document.createElement('tr');
+        rightTr.className = "hover:bg-slate-100 dark:hover:bg-slate-800/40";
+        rightTr.setAttribute('data-emp-id', emp.id);
+        rightTr.innerHTML = `
+          <td class="py-2 px-2 text-center text-slate-400">${index + 1}</td>
+          <td class="py-2 px-2 font-mono">${emp.empCode}</td>
+          <td class="py-2 px-2">${emp.name}</td>
+          <td class="py-2 px-2">
+            <select class="ot-job w-full px-2 py-1 rounded bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs" onchange="updateRowData(${emp.id}, this)">
+              ${jobOptionsHtml}
+            </select>
+          </td>
+          <td class="py-2 px-2">
+            <input type="text" class="ot-note w-full px-2 py-1 rounded bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs" value="${state.note}" placeholder="-" oninput="updateRowData(${emp.id}, this)">
+          </td>
+        `;
+        rightTbody.appendChild(rightTr);
+      });
+
+      document.getElementById('selectedOtCount').textContent = selectedEmployees.length;
+    }
+
+    function syncOtSelection(empId, checkbox) {
+      if (!otSelectionState[empId]) {
+        otSelectionState[empId] = { checked: false, job: 'ปฏิบัติงานไลน์ผลิตตามA/C', note: '' };
+      }
+      otSelectionState[empId].checked = checkbox.checked;
+      loadOtEmployees();
+    }
+
+    function updateRowData(empId, element) {
+      const tr = element.closest('tr');
+      const job = tr.querySelector('.ot-job').value;
+      const note = tr.querySelector('.ot-note').value;
+      if (otSelectionState[empId]) {
+        otSelectionState[empId].job = job;
+        otSelectionState[empId].note = note;
+      }
+    }
+
+    function resetOtSelection() {
+      if (confirm('คุณต้องการล้างการเลือกพนักงานทั้งหมดใช่หรือไม่?')) {
+        otSelectionState = {};
+        const targetEmployees = employees.filter(e => e.status === 'Active');
+        targetEmployees.forEach(emp => {
+          otSelectionState[emp.id] = { checked: false, job: 'ปฏิบัติงานไลน์ผลิตตามA/C', note: '' };
+        });
+        document.getElementById('otSearchInput').value = '';
+        loadOtEmployees();
+      }
+    }
+
+    function toggleSelectAllOt(master) {
+      // ติ๊กเลือกเฉพาะรายชื่อในตารางฝั่งซ้ายที่กำลังแสดงผลอยู่
+      const checkboxes = document.querySelectorAll('.ot-checkbox');
+      checkboxes.forEach(cb => {
+        cb.checked = master.checked;
+        const empId = Number(cb.value);
+        if (otSelectionState[empId]) {
+          otSelectionState[empId].checked = master.checked;
+        }
+      });
+      loadOtEmployees();
+    }
+
+    function getSelectedOtData() {
+      saveCurrentOtRowStates();
+      let selectedList = [];
+      Object.keys(otSelectionState).forEach(empIdStr => {
+        const empId = Number(empIdStr);
+        const state = otSelectionState[empId];
+        if (state && state.checked) {
+          const emp = employees.find(e => e.id === empId);
+          if (emp) {
+            selectedList.push({ ...emp, job: state.job, note: state.note });
+          }
+        }
+      });
+      return selectedList;
+    }
+
+    function printOtA4() {
+      const selectedList = getSelectedOtData();
+      if (selectedList.length === 0) {
+        alert('กรุณาเลือกพนักงานอย่างน้อย 1 คนสำหรับทำ OT');
+        return;
+      }
+
+      const customUnit = document.getElementById('otCustomUnitInput').value.trim() || '-';
+      const rawDate = document.getElementById('otDateInput').value;
+      const startTime = document.getElementById('otStartTimeInput').value;
+      const endTime = document.getElementById('otEndTimeInput').value;
+
+      let formattedDate = rawDate;
+      if (rawDate) {
+        const parts = rawDate.split('-');
+        if (parts.length === 3) {
+          formattedDate = `${parts[2]}/${parts[1]}/${Number(parts[0]) + 543}`;
+        }
+      }
+
+      document.getElementById('printOtUnit').textContent = customUnit;
+      document.getElementById('printOtCount').textContent = selectedList.length;
+      document.getElementById('printOtDate').textContent = formattedDate;
+      document.getElementById('printOtStartTime').textContent = startTime;
+      document.getElementById('printOtEndTime').textContent = endTime;
+
+      const otArea = document.getElementById('otPrintArea');
+      const funeralArea = document.getElementById('funeralPrintArea');
+      
+      otArea.className = "print-container print-active";
+      funeralArea.className = "print-container print-inactive";
+
+      const tbody = document.getElementById('otPrintTableBody');
+      tbody.innerHTML = '';
+
+      selectedList.forEach((emp, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="text-align: center; border: 1px solid #000; padding: 2px 4px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">${index + 1}</td>
+          <td style="text-align: center; border: 1px solid #000; padding: 2px 4px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">${emp.deptCode}</td>
+          <td style="text-align: center; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif; border: 1px solid #000; padding: 2px 4px;">${emp.empCode}</td>
+          <td style="text-align: left; border: 1px solid #000; padding: 2px 4px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">${emp.name}</td>
+          <td style="text-align: left; border: 1px solid #000; padding: 2px 4px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">${emp.job}</td>
+          <td style="text-align: center; border: 1px solid #000; padding: 2px 4px; height: 19px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;"></td>
+          <td style="text-align: center; border: 1px solid #000; padding: 2px 4px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">${emp.note || '-'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const totalRows = 25;
+      for (let i = selectedList.length; i < totalRows; i++) {
+        const emptyTr = document.createElement('tr');
+        emptyTr.innerHTML = `
+          <td style="text-align: center; border: 1px solid #000; padding: 2px 4px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">&nbsp;</td>
+          <td style="text-align: center; border: 1px solid #000; padding: 2px 4px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">&nbsp;</td>
+          <td style="text-align: center; border: 1px solid #000; padding: 2px 4px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">&nbsp;</td>
+          <td style="text-align: left; border: 1px solid #000; padding: 2px 4px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">&nbsp;</td>
+          <td style="text-align: left; border: 1px solid #000; padding: 2px 4px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">&nbsp;</td>
+          <td style="text-align: center; border: 1px solid #000; padding: 2px 4px; height: 19px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">&nbsp;</td>
+          <td style="text-align: center; border: 1px solid #000; padding: 2px 4px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">&nbsp;</td>
+        `;
+        tbody.appendChild(emptyTr);
+      }
+
+      window.print();
+    }
+
+    function exportOtExcel() {
+      const selectedList = getSelectedOtData();
+      if (selectedList.length === 0) {
+        alert('กรุณาเลือกพนักงานอย่างน้อย 1 คนสำหรับทำ OT');
+        return;
+      }
+
+      const customUnit = document.getElementById('otCustomUnitInput').value.trim() || '-';
+      const rawDate = document.getElementById('otDateInput').value;
+      const startTime = document.getElementById('otStartTimeInput').value;
+      const endTime = document.getElementById('otEndTimeInput').value;
+
+      let csvContent = "\uFEFF";
+      csvContent += `"บริษัท ไพโรจน์ (ทั่งซังฮะ) จำกัด สาขาบางปู"\n`;
+      csvContent += `"ใบเบิกค่าทำงานล่วงเวลา (OT)"\n`;
+      csvContent += `"หน่วยงาน: ${customUnit}","วันที่: ${rawDate}","เวลา: ${startTime} - ${endTime} น."\n\n`;
+      
+      csvContent += "ที่,แผนก,รหัส,ชื่อ-สกุล,งานที่ทำ,ลายเซ็นผู้ทำงานล่วงเวลา,หมายเหตุ\n";
+      selectedList.forEach((emp, index) => {
+        csvContent += `"${index + 1}","${emp.deptCode}","${emp.empCode}","${emp.name}","${emp.job}","","${emp.note || '-'}"\n`;
+      });
+
+      const totalRows = 25;
+      for (let i = selectedList.length; i < totalRows; i++) {
+        csvContent += `"","","","","","",""\n`;
+      }
+
+      csvContent += `\n"จำนวนพนักงานทั้งหมด: ${selectedList.length} คน","","","","","",""\n\n`;
+      csvContent += `"ผู้สั่งการ/อนุมัติ........................................................................","","","หัวหน้าแผนก........................................................................","","",""\n`;
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ใบเบิกค่าทำงานล่วงเวลา_${customUnit}_${rawDate}.csv`;
+      a.click();
+    }
+
+    /* ========================================== */
+    /* ฟังก์ชันระบบเงินช่วยงานศพ */
+    /* ========================================== */
+    function openFuneralModal() { 
+      document.getElementById('funeralUnitSelect').value = 'ALL';
+      document.getElementById('funeralModal').classList.remove('hidden'); 
+    }
+    
+    function closeFuneralModal() { 
+      document.getElementById('funeralModal').classList.add('hidden'); 
+    }
+
+    function confirmExportFuneralCSV() {
+      const selectedUnit = document.getElementById('funeralUnitSelect').value;
+      const dataToExport = (selectedUnit === 'ALL') ? employees : employees.filter(e => e.unit === selectedUnit);
+      if (dataToExport.length === 0) { alert('ไม่พบข้อมูลพนักงานในหน่วยงานนี้'); return; }
+
+      let totalAmount = dataToExport.length * 20;
+      let csvContent = "\uFEFF";
+      csvContent += `"บริษัท ไพโรจน์ (ทั่งซังฮะ) จำกัด สาขาบางปู"\n`;
+      csvContent += `"รายงานสรุปการเก็บเงินช่วยงานศพพนักงาน"\n`;
+      csvContent += `"หน่วยงาน: ${selectedUnit}"\n\n`;
+      csvContent += "ที่,แผนก,รหัสพนักงาน,ชื่อ - นามสกุล,หน่วยงาน,จำนวนเงิน (บาท),ลายเซ็น\n";
+      
+      dataToExport.forEach((emp, index) => {
+        csvContent += `"${index + 1}","${emp.deptCode}","${emp.empCode}","${emp.name}","${emp.unit}","20.00",""\n`;
+      });
+
+      const totalRows = 25;
+      for (let i = dataToExport.length; i < totalRows; i++) {
+        csvContent += `"","","","","","",""\n`;
+      }
+
+      csvContent += `\n"รวมพนักงานทั้งสิ้น: ${dataToExport.length} คน","","","","รวมเป็นเงิน:","${totalAmount.toFixed(2)} บาท",""\n\n`;
+      csvContent += `"ผู้จัดเก็บเงิน........................................................................","","","หัวหน้าแผนก........................................................................","","",""\n`;
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = `รายงานเงินช่วยงานศพ_${selectedUnit}.csv`; a.click();
+      closeFuneralModal();
+    }
+
+    function printFuneralA4() {
+      const selectedUnit = document.getElementById('funeralUnitSelect').value;
+      const dataToExport = (selectedUnit === 'ALL') ? employees : employees.filter(e => e.unit === selectedUnit);
+      if (dataToExport.length === 0) { alert('ไม่พบข้อมูลพนักงานในหน่วยงานนี้'); return; }
+
+      const totalAmount = dataToExport.length * 20;
+      const todayStr = new Date().toLocaleDateString('th-TH');
+
+      document.getElementById('printFuneralUnit').textContent = selectedUnit === 'ALL' ? 'ทุกหน่วยงาน / ไลน์ผลิต' : selectedUnit;
+      document.getElementById('printFuneralDate').textContent = todayStr;
+      document.getElementById('printFuneralCount').textContent = dataToExport.length;
+      document.getElementById('printFuneralTotalAmount').textContent = totalAmount.toFixed(2);
+
+      const otArea = document.getElementById('otPrintArea');
+      const funeralArea = document.getElementById('funeralPrintArea');
+
+      funeralArea.className = "print-container print-active";
+      otArea.className = "print-container print-inactive";
+
+      const tbody = document.getElementById('funeralPrintTableBody');
+      tbody.innerHTML = '';
+
+      dataToExport.forEach((emp, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="text-align: center; border: 1px solid #000; padding: 2px 4px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">${index + 1}</td>
+          <td style="text-align: center; border: 1px solid #000; padding: 2px 4px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">${emp.deptCode}</td>
+          <td style="text-align: center; border: 1px solid #000; padding: 2px 4px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">${emp.empCode}</td>
+          <td style="text-align: left; border: 1px solid #000; padding: 2px 4px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">${emp.name}</td>
+          <td style="text-align: center; border: 1px solid #000; padding: 2px 4px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">20.00</td>
+          <td style="text-align: center; border: 1px solid #000; padding: 2px 4px; height: 19px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;"></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const totalRows = 25;
+      for (let i = dataToExport.length; i < totalRows; i++) {
+        const emptyTr = document.createElement('tr');
+        emptyTr.innerHTML = `
+          <td style="text-align: center; border: 1px solid #000; padding: 2px 4px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">&nbsp;</td>
+          <td style="text-align: center; border: 1px solid #000; padding: 2px 4px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">&nbsp;</td>
+          <td style="text-align: center; border: 1px solid #000; padding: 2px 4px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">&nbsp;</td>
+          <td style="text-align: left; border: 1px solid #000; padding: 2px 4px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">&nbsp;</td>
+          <td style="text-align: center; border: 1px solid #000; padding: 2px 4px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">&nbsp;</td>
+          <td style="text-align: center; border: 1px solid #000; padding: 2px 4px; height: 19px; font-family: 'Angsana New', 'TH Sarabun PSK', THSarabunNew, sans-serif;">&nbsp;</td>
+        `;
+        tbody.appendChild(emptyTr);
+      }
+
+      closeFuneralModal();
+      window.print();
+    }
+
+    function openModal(mode, id = null) {
+      const modal = document.getElementById('empModal');
+      const title = document.getElementById('modalTitle');
+      modal.classList.remove('hidden');
+      setTimeout(() => modal.classList.remove('opacity-0'), 10);
+
+      if (mode === 'add') {
+        title.innerHTML = '<i class="fa-solid fa-user-plus text-sky-600"></i> เพิ่มพนักงานใหม่';
+        document.getElementById('empForm').reset();
+        document.getElementById('empIdInput').value = '';
+      } else if (mode === 'edit') {
+        title.innerHTML = '<i class="fa-solid fa-user-pen text-sky-600"></i> แก้ไขข้อมูลพนักงาน';
+        const emp = employees.find(e => e.id === id);
+        if (emp) {
+          document.getElementById('empIdInput').value = emp.id;
+          document.getElementById('deptCodeInput').value = emp.deptCode;
+          document.getElementById('empCodeInput').value = emp.empCode;
+          document.getElementById('nameInput').value = emp.name;
+          document.getElementById('unitInput').value = emp.unit;
+          document.getElementById('statusInput').value = emp.status;
+        }
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('empModal').classList.add('opacity-0');
+      setTimeout(() => document.getElementById('empModal').classList.add('hidden'), 150);
+    }
+
+    function saveEmployee(e) {
+      e.preventDefault();
+      const idVal = document.getElementById('empIdInput').value;
+      const deptCode = document.getElementById('deptCodeInput').value;
+      const empCode = document.getElementById('empCodeInput').value;
+      const name = document.getElementById('nameInput').value;
+      const unit = document.getElementById('unitInput').value;
+      const status = document.getElementById('statusInput').value;
+
+      if (idVal) {
+        const index = employees.findIndex(emp => emp.id == idVal);
+        if (index !== -1) employees[index] = { id: Number(idVal), deptCode, empCode, name, unit, status };
+      } else {
+        employees.unshift({ id: Date.now(), deptCode, empCode, name, unit, status });
+      }
+
+      localStorage.setItem('tiparos_employees_v3', JSON.stringify(employees));
+      handleFilter();
+      closeModal();
+    }
+
+    function deleteEmployee(id) {
+      if (confirm('คุณต้องการลบรายชื่อนี้ใช่หรือไม่?')) {
+        employees = employees.filter(e => e.id !== id);
+        localStorage.setItem('tiparos_employees_v3', JSON.stringify(employees));
+        handleFilter();
+      }
+    }
+
+    function exportToCSV() {
+      let csvContent = "\uFEFFแผนก,รหัสพนักงาน,ชื่อ - นามสกุล,หน่วยงาน,สถานะ\n";
+      filteredData.forEach(e => { csvContent += `"${e.deptCode}","${e.empCode}","${e.name}","${e.unit}","${e.status}"\n`; });
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'รายชื่อพนักงาน.csv'; a.click();
+    }
+
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      document.getElementById('themeIcon').className = isDark ? 'fa-solid fa-sun text-sm' : 'fa-solid fa-moon text-sm';
+      renderChart();
+    }
+
+    renderTable();
+  </script>
+</body>
+</html>
